@@ -1,13 +1,19 @@
 {
-    "builds": [{
-        "src": "manage.py",
-        "use": "@vercel/python",
+    "builds": [
+      {
+        "src": "/wsgi.py", 
+        "use": "@ardnt/vercel-python-wsgi",
         "config": { "maxLambdaSize": "15mb" }
-    }],
+      }
+    ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "manage.py"
-        }
-    ]
-}
+      {
+        "src": "/(.*)",
+        "dest": "/wsgi.py"  
+      }
+    ],
+    "env": {
+      "PYTHON_VERSION": "3.12" 
+    }
+  }
+  
