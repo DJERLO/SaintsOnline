@@ -160,6 +160,27 @@ JAZZMIN_SETTINGS = {
     'site_brand' : "SAINTS CLARE SHOP",
     'site_logo': "assets/imgs/theme/shopadmin.png",
     'copyright' : "Saint-Shop.scc",
+
+     "icons": {
+        "auth": "fas fa-users-cog", 
+        "auth.user": "fas fa-user", 
+        "auth.Group": "fas fa-users", 
+
+        "core.Address": "fas fa-building", 
+        "core.CartOrder": "fa-solid fa-cart-shopping", 
+        "core.CartOrderProducts": "fa-solid fa-cart-arrow-down", 
+        "core.Category": "fa-solid fa-list", 
+        "core.Coupon": "fa-solid fa-ticket",
+        "core.Product": "fa-solid fa-icons",
+        "core.Vendor": "fa-solid fa-shop", 
+        "core.ProductReview": "fa-regular fa-star",
+
+        "Taggit.Tags": "fa-solid fa-tag",
+        
+        "userauths.ContactUs": "fa-solid fa-phone",
+        "userauths.Profile": "fas fa-users", 
+        "userauths.User": "fa-regular fa-user",
+        },
 }
 
 JAZZMIN_UI_TWEAKS = {
