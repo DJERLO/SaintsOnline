@@ -1,0 +1,18 @@
+{% extends 'partial/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row justify-content-center pt-lg-4 text-center" style="margin-bottom: 200px; margin-top: 100px;">
+    <div class="col-lg-5 col-md-7 col-sm-9">
+        <h1 class="display-404 py-lg-3">Payment Completed</h1>
+        <h2 class="h3 mb-4">Your order has been successfully placed. Order Id #{{order.oid}}</h2>
+        <h4>Please take a screenshot of your order id. and wait for the call to pickup your order</h4>
+        <p class="fs-md mb-4">
+        <br>
+        For more questions and concern just click the Contact Us button below.
+        </p>
+        <a href="{% url 'core:contact' %}">Contact Us</a>
+    </div>
+</div>
+
+{% endblock content %}

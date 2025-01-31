@@ -1,0 +1,107 @@
+{% extends 'partial/base.html' %}
+{% load static %}
+{% block content %}
+    <main class="main pages">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                    <span></span> Pages <span></span> Purchase Guide
+                </div>
+            </div>
+        </div>
+        <div class="page-content pt-50">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-10 col-lg-12 m-auto">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <div class="single-page pr-30 mb-lg-0 mb-sm-5">
+                                    <div class="single-header style-2">
+                                        <h2>Purchase Guide</h2>
+                                    </div>
+                                    <figure class="border-radius-15 mb-30">
+                                        <img class="border-radius-15" src="{% static 'assets/imgs/page/guide-1.png' %}" alt="" />
+                                    </figure>
+                                    <div class="single-content mb-50">
+                                        <h3>1. Account Registering</h3>
+                                        <p>Welcome to Saints Online Shop, the official ecommerce platform for St. Clare College of Caloocan!  Before you make your first purchase, creating an account will enhance your shopping experience by allowing you to track orders, save your preferences, and access exclusive discounts.</p>
+                                        <ul class="mb-30">
+                                            <li>Username (required)</li>
+                                            <li>Email (required)</li>
+                                            <li>Password (required)</li>
+                                            <li>Confirm Password (required)</li>
+                                            <li>Mobile phone numbers (required)</li>
+                                            <li>Bio (required) </li>
+                                            <li>Fullname (required)</li>
+                                            <li>User Profile (required) </li>
+                                        </ul>
+                                        <h3>2. Select Product</h3>
+                                        <p>Start your shopping journey by exploring our product categories. We’ve made it simple for you to find exactly what you’re looking for, whether it's Books, Uniforms, Scc Merchandice, and others. </p>
+                                        <h3>3. Confirm Order Content</h3>
+                                        <p>To proceed with your order, you’ll need to provide payment details. We offer several secure payment methods: <br>
+
+                                            <br> Credit/Debit Cards: Visa, MasterCard, and other major credit cards. <br>
+                                            Digital Wallet: PayPal, (Some wallets my be updated for the future) </p>
+
+                                        <h3>4.Transaction Completed</h3>
+                                        <p>Thank you for shopping at Saints Online Shop, the official ecommerce platform for St. Clare College of Caloocan! We are thrilled that you’ve completed your purchase, and this guide will help you understand what happens next, so you can stay updated and informed throughout the process.</p>
+                                        <h3>5. Accepted Debit And Credit Cards</h3>
+                                        <ul>
+                                            <li>Visa</li>
+                                            <li>Mastercards</li>
+                                            <li>American Express</li>
+                                        </ul>
+                                        
+                                        <h3 class="mt-30">6. Return And Exchange</h3>
+                                        <ul>
+                                            <p>If for any reason you are not completely satisfied with your purchase, we offer a Returns & Exchanges Policy. You can return or exchange items within 7 days of receiving your order.</p>
+                                            <li>Eligibility: Items must be unused and in original packaging.</li>
+                                            <li>Process: Log into your account and go to the "Contact" section, send us a message about your problem.</li>
+                                        </ul>
+
+                                        <h3 class="mt-30">7. Customer Support</h3>
+                                        <ul>
+                                            <p>If you have any questions or need assistance with your order, our customer service team is here to help:</p>
+                                            <li>FullName: [insert your fullname]</li>
+                                            <li>Email: [insert Scc Email]</li>
+                                            <li>Phone Number: [insert your Phone No.]</li>
+                                            <li>Subject: [insert the subject concern]</li>
+                                            <li>Year Level: [insert your Year Level]</li>
+                                            <li>Message: [insert your Message concern]</li>
+                                            <li>Process: Log into your account and go to the "Contact" section, send us a message about your problem.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 primary-sidebar sticky-sidebar">
+                                <div class="widget-area">
+                                    <div class="sidebar-widget-2 widget_search mb-50">
+                                        <div class="search-form">
+                                            <form action="{% url 'core:search' %}" method="GET">
+                                                <input type="text" placeholder="Search for items..." name="q" />
+                                                <button class="material-symbols-outlined" type="submit"><span class="material-symbols-outlined">search</span></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="sidebar-widget widget-category-2 mb-30">
+                                        <h5 class="section-title style-1 mb-30">Category</h5>
+                                        <ul>
+                            
+                                            {% for c in categories %}
+                                            <li>
+                                                <a href="{% url 'core:category-product-list' c.cid %}"> <img src="{{ c.image.url }}" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 10px;" />{{c.title}}</a><span class="count">{{c.product_count}}</span>
+                                            </li>
+                                            {% endfor %}
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock content %}

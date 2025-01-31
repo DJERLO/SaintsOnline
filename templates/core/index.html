@@ -1,0 +1,136 @@
+{% extends 'partial/base.html' %}
+{% load static %}
+{% block content %}
+    <main class="main">
+        <div class="container mb-30">
+            <div class="row flex-row-reverse">
+                <div class="col-lg-4-5">
+                    <section class="home-slider position-relative mb-30">
+                        <div class="home-slide-cover mt-30">
+                            <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1">
+                                <div class="single-hero-slider single-animation-wrap" style="background-image: url({% static 'assets/imgs/slider/vlab1.jpg' %})">
+                                    <div class="slider-content">
+                                        <h1 class="display-2 mb-40">
+                                            Welcome to Saints<br /> Online Shop
+                                        </h1>
+                                        <p class="mb-65" style="color: rgb(255, 255, 255);">Use the code "Code101" For 20pesos discount</p>
+                                    </div>
+                                </div>
+                                <div class="single-hero-slider single-animation-wrap" style="background-image: url({% static 'assets/imgs/slider/scslider1.jpg' %})">
+                                    <div class="slider-content">
+                                        <h1 class="display-2 mb-40">
+                                            Amazing School Needs <br /> Discount
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slider-arrow hero-slider-1-arrow"></div>
+                        </div>
+                    </section>
+                    <!--End hero-->
+                    <section class="product-tabs section-padding position-relative">
+                        <div class="section-title style-2">
+                            <h3>Popular Products</h3>
+                        </div>
+                        <!--End nav-tabs-->
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
+                                <div class="row product-grid-4">
+                                    
+                                    {% for p in products %}
+                                    <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
+                                        <div class="product-cart-wrap mb-30">
+                                            <div class="product-img-action-wrap">
+                                                <div class="product-img product-img-zoom">
+                                                    <a href="{% url 'core:product-detail' p.pid %}">
+                                                        <img class="default-img" src="{{ p.image.url }}" alt="" style="height: 280px; width: 280px; object-fit: cover;"   />
+                                                        <img class="hover-img" src="{{ p.image.url }}" alt=""  style="height: 280px; width: 280px; object-fit: cover;"  />
+                                                    </a>
+                                                </div>
+                                                <div class="product-action-1">
+                                                    <a href="{% url 'core:product-detail' p.pid %}" class="action-btn"><i class="fi-rs-eye"></i></a>
+                                                </div>
+                                                <div class="product-badges product-badges-position product-badges-mrg">
+                                                    <span class="hot">-{{p.get_precentage|floatformat:0}}%</span>
+                                                </div>
+                                            </div>
+                                            <div class="product-content-wrap">
+                                                <div class="product-category">
+                                                    <a href="shop-grid-right.html">{{ p.category.title }}</a>
+                                                </div>
+                                                <h2><a href="{% url 'core:product-detail' p.pid %}">{{ p.title }}</a></h2>
+                                                <div class="product-rate-cover">
+                                                    <!-- <div class="product-rate d-inline-block"> -->
+                                                        <!-- <div class="product-rating" style="width: 20%"></div> -->
+                                                    <!-- </div> -->
+                                                    <i class="fas fa-star text-warning"></i>
+                                                    <span class="font-small ml-5 text-muted"> ({{ p.reviews.all.count }})</span>
+                                                </div>
+                                                <div>
+                                                    <span class="font-small text-muted">By <a href="">{{p.vendor.title}}</a></span>
+                                                </div>
+                                                <div class="product-card-bottom">
+                                                    <div class="product-price">
+                                                        <span>₱ </span> <span class="current-product-price-{{ p.id }}">{{p.price}}</span>
+                                                        <span class="old-price">₱ {{p.old_price}}</span>
+                                                    </div>
+                                                    <div class="add-cart">
+                                                        <input type="hidden" value="1" id="product-quantity" class="product-quantity-{{ p.id }}">
+                                                        <input type="hidden" class="product-pid-{{ p.id }}" value="{{ p.pid }}">
+                                                        <input type="hidden" class="product-image-{{ p.id }}" value="{{ p.image.url }}">
+                                                        <input type="hidden" class="product-id-{{ p.id }}" value="{{ p.id }}">
+                                                        <input type="hidden" class="product-title-{{ p.id }}" value="{{ p.title }}">
+
+                                                        <div class="d-flex">
+                                                            <button class="add add-to-cart-btn" data-index="{{ p.id }}" style="border: none;" id="add-to-cart-btn"><i class="fi-rs-shopping-cart mr-5"></i>Add</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <!--End product-grid-4-->
+                            </div>
+                            <!--En tab one-->
+                            <div class="tab-pane fade" id="tab-two" role="tabpanel" aria-labelledby="tab-two">
+                            </div>
+                            <!--En tab five-->
+                            <div class="tab-pane fade" id="tab-six" role="tabpanel" aria-labelledby="tab-six">
+                            </div>
+                            <!--En tab six-->
+                            <div class="tab-pane fade" id="tab-seven" role="tabpanel" aria-labelledby="tab-seven">
+                            
+                            </div>
+                        </div>
+                    </section>
+                    <!--Products Tabs-->
+                </div>
+                <div class="col-lg-1-5 primary-sidebar sticky-sidebar pt-30">
+                    <div class="sidebar-widget widget-category-2 mb-30">
+                        <h5 class="section-title style-1 mb-30">Category</h5>
+                        <ul>
+                            
+                            {% for c in categories %}
+                            <li>
+                                <a href="{% url 'core:category-product-list' c.cid %}"> <img src="{{ c.image.url }}" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 10px;" />{{c.title}}</a><span class="count">{{c.product_count}}</span>
+                            </li>
+                            {% endfor %}
+                            
+                        </ul>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+        </section>
+        <!--End category slider-->
+        
+        <!--End 4 columns-->
+    </main>
+    
+    
+
+{% endblock content %}
