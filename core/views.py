@@ -422,22 +422,39 @@ def checkout(request, oid):
     return render(request, "core/checkout.html", context)
 
 @login_required
-def payment_completed_view(request, oid):
-  try:
-    order = CartOrder.objects.get(oid=oid)
-    order.paid_status = True
-    order.save()
-  except CartOrder.DoesNotExist:
-    # Handle the case where the order is not found
-    context = {"message": "Order not found. Please contact us for assistance."}
-    return render(request, 'core/payment-failed.html', context)
+def payment_completed_view(request, oid=None):
+    cart_total_amount = 0
+    cart_data = request.session.get('cart_data_obj', {})
+    
+    # Calculate the cart total amount
+    for p_id, item in cart_data.items():
+        qty = int(item.get('qty', 0))
+        price = float(item.get('price', 0.0))
+        cart_total_amount += qty * price
 
-  context = {
-    "order": order,
-    "stripe_publishable_key": settings.STRIPE_PUBLIC_KEY,
+    # If an order ID (oid) is provided, handle it as a paid order
+    order = None
+    if oid:
+        try:
+            order = CartOrder.objects.get(oid=oid)
+            order.paid_status = True
+            order.save()
+        except CartOrder.DoesNotExist:
+            # Handle the case where the order is not found
+            context = {"message": "Order not found Please repeat the process."}
+            return render(request, 'core/payment-failed.html', context)
 
-  }
-  return render(request, 'core/payment-completed.html', context)
+    # Prepare the context for the template
+    context = {
+        "order": order,
+        "stripe_publishable_key": settings.STRIPE_PUBLIC_KEY if oid else None,
+        "cart_data": cart_data,
+        "totalcartitems": len(cart_data),
+        "cart_total_amount": cart_total_amount,
+    }
+    
+    return render(request, 'core/payment-completed.html', context)
+
 
 @login_required
 def payment_failed_view(request):

@@ -180,6 +180,7 @@ JAZZMIN_SETTINGS = {
         "userauths.ContactUs": "fa-solid fa-phone",
         "userauths.Profile": "fas fa-users", 
         "userauths.User": "fa-regular fa-user",
+        "userauths.Customers": "fa-light fa-user"
         },
 }
 
