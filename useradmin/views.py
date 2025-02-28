@@ -20,12 +20,10 @@ def is_customer(user):
 def dashboard(request):
     user = User.objects.get(id=request.user.id)
     revenue = 0  # Placeholder for total revenue. Replace with actual query when ready.
-    is_paid = CartOrder.objects.filter(paid_status=True)
     
-    if is_paid:
-        revenue = CartOrder.objects.aggregate(price=Sum("price"))
-        this_month = datetime.datetime.now().month
-        monthly_revenue = CartOrder.objects.filter(order_date__month=this_month).aggregate(price=Sum("price"))
+    revenue = CartOrder.objects.filter(paid_status=True).aggregate(price=Sum("price"))
+    this_month = datetime.datetime.now().month
+    monthly_revenue = CartOrder.objects.filter(paid_status=True, order_date__month=this_month).aggregate(price=Sum("price"))
     
     total_orders_count = CartOrder.objects.all()
     all_products = Product.objects.all()

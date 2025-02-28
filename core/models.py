@@ -172,7 +172,7 @@ class CartOrder(models.Model):
     tracking_website_address = models.CharField(max_length=100, null=True, blank=True)
 
     paid_status = models.BooleanField(default=False)
-    order_date = models.DateTimeField(auto_now_add=True, null=True)
+    order_date = models.DateTimeField(auto_now_add=False, null=True, default=timezone.now)
     product_status = models.CharField(choices=STATUS_CHOICES, max_length=30, default="processing")
     sku = ShortUUIDField(null=True, blank=True, length=5, prefix="SKU", max_length=20, alphabet="abcd1234")
     oid = ShortUUIDField(null=True, blank=True, length=8, max_length=20, alphabet="1234567890")
