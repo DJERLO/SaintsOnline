@@ -7,10 +7,20 @@
                 <div class="archive-header">
                     <div class="row align-items-center">
                         <div class="col-xl-3">
-                            {% if query %}
-                            <h1 class="mb-15">{{query}}</h1>
+                            {% if query_title %}
+                                <h3 class="mb-15">
+                                    You found <strong>{{ products|length }}</strong> result{% if products|length > 1 %}s{% endif %} for {{ query_title }}
+                                </h3>
+                            {% elif query_category %}
+                                <h3 class="mb-15">
+                                    You found <strong>{{ products|length }}</strong> result{% if products|length > 1 %}s{% endif %} for {{ query_category }}
+                                </h3>
+                            {% elif query_tag %}
+                            <h3 class="mb-15">
+                                You found <strong>{{ products|length }}</strong> result{% if products|length > 1 %}s{% endif %} for {{ query_tag }}
+                            </h3>
                             {% else %}
-                            <h3 class="mb-15">No Searched Item</h3>
+                                <h3 class="mb-15">No results found for {{ query }}</h3>
                             {% endif %}
                             <div class="breadcrumb">
                                 <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>

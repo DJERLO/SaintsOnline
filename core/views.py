@@ -3,13 +3,13 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from requests import session
 import stripe
-from taggit.models import Tag
+from taggit.models import Tag, TaggedItem
 from core.models import Product, Coupon, Category, Vendor, CartOrder, CartOrderProducts, ProductImages, ProductReview, Address
 from userauths.models import ContactUs, Profile
 from core.forms import ProductReviewForm
 from django.template.loader import render_to_string
 from django.contrib import messages
-
+from django.contrib import admin
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -84,8 +84,14 @@ def vendor_detail_view(request, vid):
 
 def product_detail_view(request, pid):
     product = Product.objects.get(pid=pid)
+    # Get related products based on tags (excluding the current product)
+    related_by_tags = Product.objects.filter(tags__in=product.tags.all()).exclude(pid=pid)
     # products = get_object_or_404(Product, pid=pid)
     products = Product.objects.filter(category=product.category).exclude(pid=pid)
+    
+    # Combine category-related and tag-related products (remove duplicates)
+    related_products = (products | related_by_tags).distinct()
+    
 
     # Getting all reviews
     reviews = ProductReview.objects.filter(product=product)
@@ -116,6 +122,8 @@ def product_detail_view(request, pid):
         "average_rating": average_rating,
         "reviews": reviews,
         "products":  products,
+        "products": related_products,  
+        "tags": product.tags.all(), 
     }
     return render(request, 'core/product-detail.html', context)
 
@@ -162,15 +170,29 @@ def ajax_add_review(request, pid):
     )
 
 def search_view(request):
-    query = request.GET.get("q")
+    query_title = request.GET.get("q", "")  # Search by title
+    query_category = request.GET.get("c", "")  # Search by category ID or name
+    query_tag = request.GET.get("tag", "")  # Search by tag name or ID
+    
+    products = Product.objects.all()  # Start with all products
 
-    products = Product.objects.filter(title__icontains=query).order_by("-date")
+    if query_title:
+            products = products.filter(title__icontains=query_title)
 
+    if query_category:
+        products = products.filter(category__name__icontains=query_category)
+
+    if query_tag:
+        products = products.filter(tags__name__icontains=query_tag)
+        
     context = {
+        "query_title": query_title,
+        "query_category": query_category,
+        "query_tag": query_tag,
         "products": products,
-        "query": query,
     }
     return render(request, "core/search.html", context)
+
 
 def filter_products(request):
     categories = request.GET.getlist("category[]")
@@ -268,6 +290,7 @@ def update_cart(request):
     context = render_to_string("core/async/cart-list.html", {"cart_data":request.session['cart_data_obj'], 'totalcartitems': len(request.session['cart_data_obj']), 'cart_total_amount':cart_total_amount})
     return JsonResponse({"data": context, 'totalcartitems': len(request.session['cart_data_obj'])})
 
+@login_required
 def save_checkout_info(request):
     cart_total_amount = 0
     total_amount = 0
@@ -351,6 +374,7 @@ def save_checkout_info(request):
 
         return redirect("core:checkout", order.oid)
     return redirect("core:checkout", order.oid)
+
 
 @csrf_exempt
 def create_checkout_session(request, oid):

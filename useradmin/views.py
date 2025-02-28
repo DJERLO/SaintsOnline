@@ -3,29 +3,38 @@ from django.db.models import Sum
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
-
-
-from core.models import CartOrder, CartOrderProducts, Product, Category, ProductReview
+from django.contrib.auth.models import User
+from core.models import CartOrder, CartOrderProducts, Product, Category, ProductReview, ProductTag
 from userauths.models import Profile, User
 from useradmin.forms import AddProductForm
 from useradmin.decorators import admin_required
-
+from django.contrib.auth.decorators import user_passes_test
 import datetime
 
-@admin_required
+def is_admin(user):
+    return user.groups.filter(name='Staff').exists()
+def is_customer(user):
+    return user.groups.filter(name='Customer').exists()
+
+@user_passes_test(is_admin)
 def dashboard(request):
-    revenue = CartOrder.objects.aggregate(price=Sum("price"))
+    user = User.objects.get(id=request.user.id)
+    revenue = 0  # Placeholder for total revenue. Replace with actual query when ready.
+    is_paid = CartOrder.objects.filter(paid_status=True)
+    
+    if is_paid:
+        revenue = CartOrder.objects.aggregate(price=Sum("price"))
+        this_month = datetime.datetime.now().month
+        monthly_revenue = CartOrder.objects.filter(order_date__month=this_month).aggregate(price=Sum("price"))
+    
     total_orders_count = CartOrder.objects.all()
     all_products = Product.objects.all()
     all_categories = Category.objects.all()
     new_customers = User.objects.all().order_by("-id")[:6]
     latest_orders = CartOrder.objects.all()
 
-    this_month = datetime.datetime.now().month
-    monthly_revenue = CartOrder.objects.filter(order_date__month=this_month).aggregate(price=Sum("price"))
-
-    
     context = {
+        "user": user,
         "monthly_revenue": monthly_revenue,
         "revenue": revenue,
         "all_products": all_products,
@@ -36,7 +45,7 @@ def dashboard(request):
     }
     return render(request, "useradmin/dashboard.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def products(request):
     all_products = Product.objects.all()
     all_categories = Category.objects.all()
@@ -47,7 +56,7 @@ def products(request):
     }
     return render(request, "useradmin/products.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def add_product(request):
     if request.method == "POST":
         form = AddProductForm(request.POST, request.FILES)
@@ -64,32 +73,41 @@ def add_product(request):
     }
     return render(request, "useradmin/add-products.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def edit_product(request, pid):
-    product = Product.objects.get(pid=pid)
+    product = Product.objects.get(pid=pid)  # Get product by ID
+    tags = ProductTag.objects.all()  # Get all available tags
 
     if request.method == "POST":
         form = AddProductForm(request.POST, request.FILES, instance=product)
+
         if form.is_valid():
-            new_form = form.save(commit=False)
-            new_form.save()
-            form.save_m2m()
+            tag_ids = request.POST.getlist('tags')  # Get list of selected tag IDs
+            selected_tags = ProductTag.objects.filter(id__in=tag_ids)  # Fetch existing tag objects
+            print(selected_tags) # Print
+            form.tags = selected_tags
+            new_product = form.save(commit=False)
+            new_product.save()
+            form.save_m2m()  # Save existing Many-to-Many relationships
             return redirect("useradmin:dashboard-products")
+
     else:
         form = AddProductForm(instance=product)
+
     context = {
-        'form':form,
-        'product':product,
+        'form': form,
+        'product': product,
+        'tags': tags,
     }
     return render(request, "useradmin/edit-products.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def delete_product(request, pid):
     product = Product.objects.get(pid=pid)
     product.delete()
     return redirect("useradmin:dashboard-products")
 
-@admin_required
+@user_passes_test(is_admin)
 def orders(request):
     orders = CartOrder.objects.all()
     context = {
@@ -97,7 +115,7 @@ def orders(request):
     }
     return render(request, "useradmin/orders.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def order_detail(request, id):
     order = CartOrder.objects.get(id=id)
     order_items = CartOrderProducts.objects.filter(order=order)
@@ -107,7 +125,7 @@ def order_detail(request, id):
     }
     return render(request, "useradmin/order_detail.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 @csrf_exempt
 def change_order_status(request, oid):
     order = CartOrder.objects.get(oid=oid)
@@ -120,7 +138,7 @@ def change_order_status(request, oid):
     
     return redirect("useradmin:order_detail", order.id)
 
-@admin_required
+@user_passes_test(is_admin)
 def shop_page(request):
     products = Product.objects.filter(user=request.user)
     revenue = CartOrder.objects.filter(paid_status=True).aggregate(price=Sum("price"))
@@ -133,7 +151,7 @@ def shop_page(request):
     }
     return render(request, "useradmin/shop_page.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def reviews(request):
     reviews = ProductReview.objects.all()
     context = {
@@ -141,7 +159,7 @@ def reviews(request):
     }
     return render(request, "useradmin/reviews.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def settings(request):
     profile = Profile.objects.get(user=request.user)
 
@@ -171,7 +189,7 @@ def settings(request):
     }
     return render(request, "useradmin/settings.html", context)
 
-@admin_required
+@user_passes_test(is_admin)
 def change_password(request):
     user = request.user
 

@@ -124,11 +124,16 @@
 
                                     <div class="mb-4">
                                         <label class="form-label">Tags</label>
-                                        {{form.tags}}
-                                        <small class="text-muted">Seperate tag using comma</small>
-                                        <!-- <input type="text" placeholder="%" class="form-control" id="product_name" /> -->
+                                        <select id="product-tags" name="tags" multiple="multiple" class="form-control select2" style="width: 100%;">
+                                            {% for tag in tags %}
+                                                <option value="{{ tag.id }}" {% if tag in product.tags.all %}selected{% endif %}>
+                                                    {{ tag.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <small class="text-muted">Separate tags using a comma</small>
                                     </div>
-
+                                    
                                     <div class="mb-4">
                                         <label class="form-label">Digital Product</label>
                                         <br>

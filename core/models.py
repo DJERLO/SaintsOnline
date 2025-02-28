@@ -2,7 +2,6 @@ from django.db import models
 from shortuuid.django_fields import ShortUUIDField
 from django.utils.html import mark_safe
 from userauths.models import User
-from taggit.managers import TaggableManager
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.utils import timezone
 
@@ -61,9 +60,7 @@ class Vendor(models.Model):
     title = models.CharField(max_length=100, default="Shop Name Here")
     image = models.ImageField(upload_to=user_directory_path, default="vendor.jpg")
     cover_image = models.ImageField(upload_to=user_directory_path, default="vendor.jpg")
-    #description = models.TextField(null=True, blank=True, default="SAINT'S STORE")
-    description = RichTextUploadingField(null=True, blank=True, default="SAINT'S STORE")
-
+    description = models.TextField(null=True, blank=True, default="SAINT'S STORE")
     address = models.CharField(max_length=100, default="123 Main Street.")
     contact = models.CharField(max_length=100, default="+123 (456) 789")
     chat_resp_time = models.CharField(max_length=100, default="100")
@@ -84,6 +81,12 @@ class Vendor(models.Model):
     def __str__(self):
         return self.title
     
+class ProductTag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+    
     
 class Product(models.Model):
     pid = ShortUUIDField(unique=True, length=10, max_length=20, alphabet="abcdefgh12345")
@@ -91,24 +94,19 @@ class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="category")
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, related_name="product")
-    
     title = models.CharField(max_length=100, default="Fresh Pear")
     image = models.ImageField(upload_to=user_directory_path, default="product.jpg")
-    #description = models.TextField(null=True, blank=True, default="This is the product")
-    description = RichTextUploadingField(null=True, blank=True, default="This is the product")
-
+    description = models.TextField(null=True, blank=True, default="This is the product")
     price = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
     old_price = models.DecimalField(max_digits=12, decimal_places=2, default="2.99")
     vat = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
-
-    specifications = RichTextUploadingField(null=True, blank=True,)
-    #specifications = models.TextField(null=True, blank=True,)
+    specifications = models.TextField(null=True, blank=True)
     type = models.CharField(max_length=100, default="What is the product type?", null=True, blank=True)
     stock_count = models.CharField(max_length=100, default="Item stock count?", null=True, blank=True)
     life = models.CharField(max_length=100, default="item life spand?", null=True, blank=True)
     mfd = models.DateField(auto_now_add=False, null=True, blank=True)
 
-    tags = TaggableManager(blank=True)
+    tags = models.ManyToManyField(ProductTag, blank=True, related_name="products")
 
     # tags =  models.ForeignKey(Tags, on_delete=models.SET_NULL, null=True)
 

@@ -10,8 +10,9 @@
                 </div>
             </div>
         </div>
-        <div class="container mb-30">
-            <div class="archive-header-3 mt-30 mb-80" style="background-image: url({{vendor.cover_image.url}})">
+        <div class="container mb-30 mb-80">
+            <div class="archive-header-3-glass mt-30 mb-80"></div>
+            <div class="archive-header-3 mt-30 mb-80" style="background-image: url({{vendor.cover_image.url}}); background-size: cover;">
                 <div class="archive-header-3-inner">
                     <div class="vendor-logo mr-50">
                         <img src="{{vendor.image.url}}" alt="" />
@@ -20,7 +21,7 @@
                         <div class="product-category">
                             <span class="text-muted">Since {{vendor.date|date:"Y"}}</span>
                         </div>
-                        <h3 class="mb-5 text-white"><a href="vendor-details-1.html" class="text-white">{{vendor.title}}</a></h3>
+                        <h3 class="mb-5"><a href="vendor-details-1.html">{{vendor.title}}</a></h3>
                         <div class="product-rate-cover mb-15">
                             <div class="product-rate d-inline-block">
                                 <div class="product-rating" style="width: 90%"></div>
@@ -30,11 +31,11 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="vendor-des mb-15">
-                                    <p class="font-sm text-white">{{vendor.description}}</p>
+                                    <p class="font-sm text-muted" style="color:black">{{vendor.description}}</p>
                                 </div>
                             </div>
                             <div class="col-lg-3">
-                                <div class="vendor-info text-white mb-15">
+                                <div class="vendor-info mb-15">
                                     <ul class="font-sm">
                                         <li><img class="mr-5" src="{% static 'assets/imgs/theme/icons/icon-location.svg' %}" alt="" /><strong>Address: <br> </strong> <span>{{ vendor.address }}</span></li>
                                         <li><img class="mr-5" src="{% static 'assets/imgs/theme/icons/icon-contact.svg' %}" alt="" /><strong>Call Us: <br></strong><span>{{vendor.contact}}</span></li>
@@ -43,11 +44,11 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="follow-social">
-                                    <h6 class="mb-15 text-white">Follow Us</h6>
+                                    <h6 class="mb-15 text-dark">Follow Us</h6>
                                     <ul class="social-network">
                                         <li class="hover-up">
                                             <a href="#">
-                                                <img src="{% static 'assets/imgs/theme/icons/social-tw.svg' %}" alt="" />
+                                                 <img src="{% static 'assets/imgs/theme/icons/social-tw.svg' %}" alt="" />
                                             </a>
                                         </li>
                                         <li class="hover-up">
@@ -105,7 +106,7 @@
                                     <a href="{% url 'core:product-detail' p.pid %}" class="action-btn"><i class="fi-rs-eye"></i></a>
                                 </div>
                                 <div class="product-badges product-badges-position product-badges-mrg">
-                                    <span class="hot">-{{p.get_precentage|floatformat:0}}%</span>
+                                    <!-- <span class="hot">-{{p.get_precentage|floatformat:0}}%</span> -->
                                 </div>
                             </div>
                             <div class="product-content-wrap">
@@ -115,7 +116,7 @@
                                 <h2><a href="{% url 'core:product-detail' p.pid %}">{{p.title|truncatechars:50}}</a></h2>
                                 <div class="product-rate-cover">
                                 </div>
-                                <p class="mt-15 mb-15">{{ p.description }}</p>
+                                
                                 <div class="product-price">
                                     <span>₱ {{p.price}} </span>
                                     <span class="old-price">₱ {{p.old_price}}</span>

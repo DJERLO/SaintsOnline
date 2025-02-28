@@ -1,4 +1,4 @@
-from core.models import Product
+from core.models import Product, ProductTag
 from django import forms
 # from bootstrap_datepicker_plus import DatePickerInput
 
@@ -13,7 +13,11 @@ class AddProductForm(forms.ModelForm):
     stock_count = forms.CharField(widget=forms.NumberInput(attrs={'placeholder': "How many are in stock?", "class":"form-control"}))
     life = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "How long would this product live?", "class":"form-control"}))
     mfd = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'placeholder': "e.g: 22-11-02", "class":"form-control"}))
-    tags = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Tags", "class":"form-control"}))
+    tags = forms.ModelMultipleChoiceField(
+        queryset=ProductTag.objects.all(),  # Fetch all tags from the database
+        widget=forms.SelectMultiple(attrs={"class": "form-control select2"}),
+        required=False  # Allow products without tags
+    )
     image = forms.ImageField(widget=forms.FileInput(attrs={"class":"form-control"}))
 
     class Meta:

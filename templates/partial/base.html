@@ -15,9 +15,9 @@
     <meta property="og:url" content="" />
     <meta property="og:image" content="" />
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg" />
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg" /> -->
     <!-- Template CSS -->
-    <link rel="stylesheet" href="assets/css/plugins/slider-range.css" />
+    
     <link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
@@ -79,9 +79,17 @@
                                             <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>My Account</a></li>
                                             <li><a href="{% url 'core:contact' %}"><i class="fa-solid fa-phone mr-10"></i>Support</a></li>
                                             {% if user.is_authenticated %}
-                                                {% if user.is_staff %}
-                                                    <li><a href="/admin/"><i class="fi fi-rs-user mr-10"></i>Admin Dashboard</a></li>
-                                                {% endif %}
+                                                {% for group in request.user.groups.all %}
+                                                    {% if group.name == "Staff" %}
+                                                        <li><a href="{% url 'useradmin:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>Admin Dashboard</a></li>
+                                                        {% if user.is_superuser %}
+                                                            <li><a href="/admin/"><i class="fi fi-rs-user mr-10"></i>Developer Panel</a></li>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    
+                                                {% endfor %}
+
+                                               
                                             {% endif %}
                                             <!-- <li><a href="#"><i class="fi fi-rs-location-alt mr-10"></i>Order Tracking</a></li> -->
                                             <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-settings-sliders mr-10"></i>Setting</a></li>
@@ -290,7 +298,7 @@
                         <div class="widget-about font-md mb-md-3 mb-lg-3 mb-xl-0">
                             <div class="logo mb-30">
                                 <a href="/" class="mb-15"><img src="{% static 'assets/imgs/theme/SAINTS2.jpg' %}" alt="logo" /></a>
-                                <p class="font-lg text-heading">Awesome School Supply website template</p>
+                                <p class="font-lg text-heading">The First Online Shop Of St. Clare College</p>
                             </div>
                             <ul class="contact-infor">
                                 <li><img src="{% static 'assets/imgs/theme/icons/icon-location.svg' %}" alt="" /><strong >Address: </strong> <span>Zabarte Rd, Northern Caloocan, 1400 Metro Manila</span></li>
@@ -305,12 +313,12 @@
                     <div class="footer-link-widget col">
                         <h4 class="widget-title">Courses Offer</h4>
                         <ul class="footer-list mb-sm-5 mb-md-0">
-                            <li><a href="https://stclareonline.com/ims">BSCS</a></li>
-                            <li><a href="https://stclareonline.com/ims">BSBA</a></li>
-                            <li><a href="https://stclareonline.com/ims">BSTM</a></li>
-                            <li><a href="https://stclareonline.com/ims">BSHM</a></li>
+                            <li><a href="https://www.facebook.com/SCC.CSSociety">BSCS</a></li>
+                            <li><a href="https://www.facebook.com/people/BSBA-Society-St-Clare-College/61572670781378/?_rdc=1&_rdr#">BSBA</a></li>
+                            <li><a href="https://www.facebook.com/people/BS-Tourism-Society-SCC/61563365184994/?mibextid=LQQJ4d&rdid=jmIw4QwQCeTSzcSL&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F18ADciGWMR%2F%3Fmibextid%3DLQQJ4d">BSTM</a></li>
+                            <li><a href="https://www.facebook.com/people/SCC-BSHM-Department/61563770788496/">BSHM</a></li>
                             <li><a href="https://stclareonline.com/ims">POL-SCI</a></li>
-                            <li><a href="https://stclareonline.com/ims">BSED</a></li>
+                            <li><a href="https://www.facebook.com/EducSociety2324">BSED</a></li>
                             <li><a href="https://stclareonline.com/cms">Download Form</a></li>
                         </ul>
                     </div>
@@ -324,7 +332,7 @@
                         <br>
 
                         <li>
-                            <a style="font-size:200%;" href="https://stclarecollege.edusuite.asia/login"><u>Unisuite Log-in</u> </a>
+                            <a style="font-size:200%;" href="https://stclarecollege.edusuite.asia/login"><u>Edusuite Log-in</u> </a>
                         </li>
     
                         </ul>
@@ -338,7 +346,7 @@
                     <div class="footer-bottom"></div>
                 </div>
                 <div class="col-xl-4 col-lg-6 col-md-6">
-                    <p class="font-sm mb-0">&copy; 2025, <strong class="text-brand">One Stop Shop</strong> - Saint Clare Online <br />All rights reserved</p>
+                    <p class="font-sm mb-0">&copy; 2025, <strong class="text-brand">One Stop Shop</strong> - Saints Online Shop<br />All rights reserved</p>
                 </div>
                 <div class="col-xl-4 col-lg-6 text-center d-none d-xl-block">
                     <div class="hotline d-lg-inline-flex">

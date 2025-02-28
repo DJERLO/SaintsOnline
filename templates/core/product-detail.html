@@ -96,10 +96,13 @@
                                                 </ul>
                                                 <ul class="float-start">
                                                     <li class="mb-5">SKU: <a href="#">{{p.sku}}</a></li>
-                                                    {% if p.tags %}
-                                                    <li class="mb-5">Tags: {% for tag in p.tags.all %}<a href="{% url 'core:tags' tag.slug %}" rel="tag"> #{{tag.name}}</a>,{% endfor %} </li>
-                                                    {% endif %}
-                                                    <li>Stock:<span class="in-stock text-brand ml-5">{{p.stock_count}} Items In Stock</span></li>
+                                                    <div class="product-tags">
+                                                        <strong>Tags:</strong>
+                                                        {% for tag in tags %}
+                                                            <a href="/search/?tag={{ tag.name }}" class="badge bg-primary">{{ tag.name }}</a>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <li>Stocks:<span class="in-stock text-brand ml-5">{{p.stock_count}}</span></li>
                                                 </ul>
                                             </div>
                                         </div>

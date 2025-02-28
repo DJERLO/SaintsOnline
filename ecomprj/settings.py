@@ -174,8 +174,6 @@ JAZZMIN_SETTINGS = {
         "core.Product": "fa-solid fa-icons",
         "core.Vendor": "fa-solid fa-shop", 
         "core.ProductReview": "fa-regular fa-star",
-
-        "Taggit.Tags": "fa-solid fa-tag",
         
         "userauths.ContactUs": "fa-solid fa-phone",
         "userauths.Profile": "fas fa-users", 

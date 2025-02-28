@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     # Third Party
-    'taggit',
     'crispy_bootstrap5',
     'ckeditor',
     'ckeditor_uploader',

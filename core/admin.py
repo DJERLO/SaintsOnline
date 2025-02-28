@@ -1,5 +1,7 @@
 from django.contrib import admin
-from core.models import Coupon, Product, Category, Vendor, CartOrderProducts, ProductImages, ProductReview, Address, CartOrder
+from core.models import Coupon, Product, Category, ProductTag, Vendor, CartOrderProducts, ProductImages, ProductReview, Address, CartOrder
+from django.contrib import admin
+from taggit.models import Tag, TaggedItem
 
 class ProductImageAdmin(admin.TabularInline):
     model = ProductImages
@@ -28,8 +30,10 @@ class ProductReviewAdmin(admin.ModelAdmin):
 
 
 class AddressAdmin(admin.ModelAdmin):
-    list_editable = ['address', 'status']
-    list_display = ['user', 'address', 'status']
+    model = ProductTag
+
+class ProductTagsAdmin(admin.ModelAdmin):
+    list_display = ['name']
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
@@ -38,4 +42,5 @@ admin.site.register(CartOrder, CartOrderAdmin)
 admin.site.register(CartOrderProducts, CartOrderProductsAdmin)
 admin.site.register(ProductReview, ProductReviewAdmin)
 admin.site.register(Address, AddressAdmin)
+admin.site.register(ProductTag, ProductTagsAdmin)
 admin.site.register(Coupon)
