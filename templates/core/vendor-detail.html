@@ -122,7 +122,7 @@
                                     <span class="old-price">₱ {{p.old_price}}</span>
                                 </div>
                                 <div class="mt-30 d-flex align-items-center">
-                                    <a aria-label="Buy now" class="btn" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add to Cart</a>
+                                    <a aria-label="Buy now" class="btn" href="{% url 'core:product-detail' p.pid %}"></i>View Product</a>
                                 </div>
                             </div>
                         </div>

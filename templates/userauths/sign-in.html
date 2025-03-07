@@ -1,7 +1,27 @@
 {% extends 'partial/base.html' %}
 {% load static %}
 {% block content %}
+    <style>
+        .password-container {
+            position: relative;
+            display: inline-block;
+        }
 
+        .password-container input {
+            padding-right: 20px; /* Space for the button */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }   
+    </style>
     <main class="main pages">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -22,7 +42,7 @@
                             <div class="col-lg-6 col-md-8" >
                                 <div class="
                                 in_wrap widget-taber-content background-white">
-                                    <div class="padding_eight_all bg-white">
+                                    <div class="padding_eight_all bg-white p-4">
                                         <div class="heading_s1">
                                             <center>
                                             <h1 class="mb-5"style="color:black;" >Login</h1>
@@ -35,7 +55,12 @@
                                                 <input type="text" required name="email" placeholder="Username or Email *" />
                                             </div>
                                             <div class="form-group">
-                                                <input required type="password" name="password" placeholder="Your password *" />
+                                                <div class="password-container w-100">
+                                                    <input class="w-100 p-4" required type="password" name="password" id="password" placeholder="Your password *" />
+                                                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                                                        <i id="passwordHide" class="fa fa-eye"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                             <!-- <div class="login_footer form-group">
                                                 <div class="chek-form">
@@ -72,5 +97,20 @@
             </div>
         </div>
     </main>
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("password");
+            var icon = document.getElementById("passwordHide");
 
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 {% endblock content %}

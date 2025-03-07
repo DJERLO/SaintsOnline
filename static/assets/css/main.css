@@ -221,19 +221,19 @@ li.hr span {
 ::-moz-selection {
     background: #3BB77E;
     /* WebKit/Blink Browsers */
-    color: #fff;
+    /* color: #fff; */
 }
 
 ::selection {
     background: #000000;
     /* WebKit/Blink Browsers */
-    color: #fff;
+    /* color: #fff; */
 }
 
 ::-moz-selection {
     background: #3BB77E;
     /* Gecko Browsers */
-    color: #fff;
+    /* color: #fff; */
 }
 
 ::-webkit-input-placeholder {
@@ -8636,7 +8636,7 @@ span.fi-rs-apps {
     display: inline-block;
     font-size: 16px;
     font-weight: 700;
-    color: #ffffff;
+    /* color: #ffffff; */
     font-family: "Quicksand", sans-serif;
 }
 
@@ -8646,9 +8646,9 @@ span.fi-rs-apps {
     margin-left: 4px;
 }
 
-.main-menu>nav>ul>li>a.active {
+/* .main-menu>nav>ul>li>a.active {
     color: #ffffff;
-}
+} */
 
 .main-menu>nav>ul>li ul.sub-menu {
     position: absolute;
