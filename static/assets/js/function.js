@@ -214,7 +214,7 @@ $(document).ready(function () {
 
 
 
-    $(".update-product").on("click", function () {
+    $(".update-product").on("input", function () {
 
         let product_id = $(this).attr("data-product")
         let this_val = $(this)
@@ -231,7 +231,7 @@ $(document).ready(function () {
             },
             dataType: "json",
             beforeSend: function () {
-                this_val.hide()
+                this_val.show()
             },
             success: function (response) {
                 this_val.show()

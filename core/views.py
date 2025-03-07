@@ -21,6 +21,12 @@ from django.utils.timezone import localtime
 from django.db.models import Count, Avg
 from django.db.models.functions import ExtractMonth
 from django.core import serializers
+import base64
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def index(request):
     #products = Product.objects.all().order_by('-id')
@@ -28,7 +34,6 @@ def index(request):
 
     context = {
         "products": products
-        
     }
 
     return render(request, 'core/index.html', context)
@@ -248,6 +253,7 @@ def add_to_cart(request):
 
 def cart_view(request):
     cart_total_amount = 0
+
     if 'cart_data_obj' in request.session:
         for p_id, item in request.session['cart_data_obj'].items():
             cart_total_amount += int(item['qty']) * float(item['price'])
@@ -412,8 +418,13 @@ def create_checkout_session(request, oid):
 def checkout(request, oid):
     order = CartOrder.objects.get(oid=oid)
     order_items = CartOrderProducts.objects.filter(order=order)
+    
+    # Use secret API key to create a Checkout Session
+    username = os.getenv("PAYMONGO_SECRET_KEY")
+    password = ""
+    credentials = f"{username}:{password}"
+    authorization = base64.b64encode(credentials.encode()).decode()
 
-   
     if request.method == "POST":
         code = request.POST.get("code")
         print("code ========", code)
@@ -438,14 +449,15 @@ def checkout(request, oid):
         
 
     context = {
+        "oid": oid,
         "order": order,
         "order_items": order_items,
         "stripe_publishable_key": settings.STRIPE_PUBLIC_KEY,
-
+        "authorization": authorization
     }
     return render(request, "core/checkout.html", context)
 
-@login_required
+@login_required 
 def payment_completed_view(request, oid=None):
     cart_total_amount = 0
     cart_data = request.session.get('cart_data_obj', {})
@@ -468,6 +480,9 @@ def payment_completed_view(request, oid=None):
             context = {"message": "Order not found Please repeat the process."}
             return render(request, 'core/payment-failed.html', context)
 
+    if 'cart_data_obj' in request.session:
+        request.session['cart_data_obj'] = {}  # Clears all items but keeps the key
+        request.session.modified = True  # Ensure session updates
     # Prepare the context for the template
     context = {
         "order": order,
