@@ -1,6 +1,6 @@
 {% extends 'partial/base.html' %}
 {% load static %}
-{% block content %}
+{% block page %}
     <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -21,7 +21,7 @@
                         <div class="product-category">
                             <span class="text-muted">Since {{vendor.date|date:"Y"}}</span>
                         </div>
-                        <h3 class="mb-5"><a href="vendor-details-1.html">{{vendor.title}}</a></h3>
+                        <h3 class="mb-5"><a href="#">{{vendor.title}}</a></h3>
                         <div class="product-rate-cover mb-15">
                             <div class="product-rate d-inline-block">
                                 <div class="product-rating" style="width: 90%"></div>
@@ -144,4 +144,4 @@
             </div>
         </div>
     </main>
-{% endblock content %}
+{% endblock page %}

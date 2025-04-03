@@ -1,6 +1,6 @@
 {% extends 'partial/base.html' %}
 {% load static %}
-{% block content %}
+{% block page %}
 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
 <script>hljs.initHighlightingOnLoad();</script>
@@ -136,7 +136,7 @@
                                                     <img src="{{p.vendor.image.url}}" alt="" />
                                                     <div class="vendor-name ml-15">
                                                         <h6>
-                                                            <a href="vendor-details-2.html">{{p.vendor.title}}</a>
+                                                            <a href="#">{{p.vendor.title}}</a>
                                                         </h6>
                                                         <div class="product-rate-cover text-end">
                                                             <div class="product-rate d-inline-block">
@@ -439,4 +439,4 @@
             </div>
         </div>
     </main>
-{% endblock content %}
+{% endblock page %}

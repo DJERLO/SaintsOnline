@@ -48,6 +48,10 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     #third party
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'taggit',
     'ckeditor',
     'ckeditor_uploader',
@@ -67,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'ecomprj.urls'
@@ -156,7 +161,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
     'user_avatar': 'avatar',
-    'site_header' : "Saint Bookstore",
+    'site_header' : "Saints Online",
     'site_brand' : "SAINTS CLARE SHOP",
     'site_logo': "assets/imgs/theme/shopadmin.png",
     'copyright' : "Saint-Shop.scc",
@@ -217,6 +222,46 @@ JAZZMIN_UI_TWEAKS = {
 LOGIN_URL = "userauths:sign-in"
 LOGIN_REDIRECT_URL = "core:index"
 LOGOUT_REDIRECT_URL = "userauths:sign-in"
+
+#ALLAUTH
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # Default
+    'allauth.account.auth_backends.AuthenticationBackend',  # Required for allauth
+)
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_LOGIN_METHODS = {'email'} # The ACCOUNT_AUTHENTICATION_METHOD is deprecated
+
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True  # Default is True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
+ACCOUNT_FORMS = {
+    'reset_password_from_key': 'attendance.forms.MyCustomResetPasswordKeyForm',
+}
+
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'  # Redirect URL after login
+LOGOUT_REDIRECT_URL = '/'  # Redirect URL after logout
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env("OAUTH_CLIENT_ID"),
+            'secret': env("OAUTH_CLIENT_SECRET"),
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',  # Requests basic profile info
+            'email',    # Requests the email address
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',  # Can be 'offline' if you need refresh tokens
+        }
+    }
+}
 
 AUTH_USER_MODEL = 'userauths.User'
 
@@ -401,3 +446,12 @@ PAYPAL_TEST = True
 
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
 STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY")
+
+# Email backend (this is for development, use a real email backend in production)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # Use TLS for security
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")  # Your Gmail address
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")  # Your Gmail password or app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Default sender email        

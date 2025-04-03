@@ -1,10 +1,11 @@
 {% extends 'partial/base.html' %}
+{% block head_title %}My Dashboard{% endblock head_title %}
 {% load static %}
 {% block title %} Dashboard {% endblock %}
 {% block head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock%}
-{% block content %}
+{% block page %}
     <main class="main pages">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -37,7 +38,7 @@
                                         <li class="nav-item">
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'userauths:sign-out' %}"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+                                            <a class="nav-link" href="{% url 'account_logout' %}"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -222,7 +223,7 @@
     </main>
 
     <script>
-        const response = {{month_counts|safe}};
+        const response = JSON.parse('{{ month_counts|safe|escapejs }}');
         // Extract months and counts
         const labels = Object.keys(response); // ['November', 'October']
         const values = Object.values(response); // [2, 1]
@@ -279,4 +280,4 @@
         // );
       </script>
       
-{% endblock content %}
+{% endblock page %}

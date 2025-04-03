@@ -1,6 +1,7 @@
 {% extends 'partial/base.html' %}
+{% block head_title %}Categories{% endblock head_title %} 
 {% load static %}
-{% block content %}
+{% block page %}
     <main class="main">
         <div class="page-header mt-30 mb-50">
             <div class="container">
@@ -99,7 +100,7 @@
                                                     <span class="font-small ml-5 text-muted"> (4.0)</span>
                                                 </div>
                                                 <div>
-                                                    <span class="font-small text-muted">By <a href="vendor-details-1.html">{{ p.vendor.title}}</a></span>
+                                                    <span class="font-small text-muted">By <a href="#">{{ p.vendor.title}}</a></span>
                                                 </div>
                                                 <div class="product-card-bottom">
                                                     <div class="product-price">
@@ -133,4 +134,4 @@
         </div>
     </main>
     
-{% endblock content %}
+{% endblock page %}

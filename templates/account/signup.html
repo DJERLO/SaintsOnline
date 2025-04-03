@@ -1,0 +1,82 @@
+{% extends 'partial/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load socialaccount %}
+{% block page %}
+
+    <main class="main pages">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                    <span></span> Pages <span></span> My Account
+                </div>
+            </div>
+        </div>
+       
+        <div class="page-content pt-150 pb-150">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-8 col-lg-10 col-md-12 m-auto">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8">
+                                <div class="login_wrap widget-taber-content background-white">
+                                    <div class="padding_eight_all bg-white p-4">
+
+                                        {% if form.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{form.errors}}</strong>
+                                        </div>
+                                        {% endif %}
+
+
+                                        <div class="heading_s1">
+                                            <h1 class="mb-5 text-center "style="color:black;">Create an Account</h1>
+                                            <p class="mb-30 text-center" style="color:black;">Already have an account? <a href="{% url 'account_login' %}">Login</a></p>
+                                        </div>
+                                        <form class="text-dark" method="post" action="{% url 'account_signup' %}">
+                                            {% csrf_token %}
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+                                                <label for="username">{% trans "Username" %}</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                                                <label for="email">{% trans "Email" %}</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="password" class="form-control" name="password1" id="password1" placeholder="Password" required>
+                                                <label for="password1">{% trans "Password" %}</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm Password" required>
+                                                <label for="password2">{% trans "Confirm Password" %}</label>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary btn-block">{% trans "Sign up" %}</button>
+                                            </div>
+                                        </form>
+                                        <hr class="bg-dark">
+                                        <div class="text-center">
+                                            <p class="text-dark">Or Sign Up with Third Party</p>
+                                            <a class="btn btn-outline-danger w-100" href="{% provider_login_url 'google' %}">
+                                                <i class='bx bxl-google' ></i> {% trans "Sign up with Google" %}
+                                            </a>
+                                        </div>        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 pr-30 d-none d-lg-block">
+                                <img class="border-radius-15" src="{% static 'assets/imgs/theme/SCC SOP.jpg' %}" alt="" />
+                            </div>
+                            <div class="col-lg-6 pr-30 d-none d-lg-block">
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock page %}

@@ -1,11 +1,13 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
 {% load static %}
-
 <!DOCTYPE html>
 <html class="no-js" lang="en">
-
+{% block extra_head %}
 <head>
     <meta charset="utf-8" />
-    <title>SAINT'S ONLINE</title>
+    <title>{% block head_title %}
+        Saint's Online{% endblock head_title %}</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -27,21 +29,26 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
 </head>
-
+{% endblock extra_head %}
+<style>
+    #logo {
+    width: 100%;               /* The logo will take up the full width of its container */
+    height: auto;              /* Maintain the aspect ratio */
+    aspect-ratio: 1 / 1;       /* Ensure the logo keeps a square aspect ratio (1:1) */
+    min-width: 10px;           /* Set a minimum width to prevent the logo from getting too small */
+    max-width: 200px;          /* Optional: Limit the maximum width */
+}
+</style>
+{% block content %}
 <body>
-    
     <header class="header-area header-style-1 header-height-2">
-        <div class="mobile-promotion">
-            <span>Welcome opening, <strong>up to 20 pesos discount</strong> to all items. Use<strong>the code </strong> CODE101</span>
-        </div>
-
         <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
             <div class="container">
                 <div class="header-wrap">
                     <div class="logo logo-width-1">
-                        <a href="/"><img src="{% static 'assets/imgs/theme/hehe.jpg' %}" alt="logo" /></a>
+                        <a href="/"><img id="logo" class="w-32 md:w-40 max-w-full h-auto" src="{% static 'assets/imgs/theme/oldsaints.png' %}" alt="logo">
+                        </a>
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
@@ -95,9 +102,9 @@
                                             <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-settings-sliders mr-10"></i>Setting</a></li>
 
                                             {% if request.user.is_authenticated %}
-                                            <li><a href="{% url 'userauths:sign-out' %}"><i class="fi fi-rs-sign-out mr-10"></i>Sign out</a></li>
+                                            <li><a href="{% url 'account_logout' %}"><i class="fi fi-rs-sign-out mr-10"></i>Sign out</a></li>
                                             {% else %}
-                                            <li><a href="{% url 'userauths:sign-in' %}"><i class="fi fi-rs-sign-in mr-10"></i>Sign In</a></li>
+                                            <li><a href="{% url 'account_login' %}"><i class="fi fi-rs-sign-in mr-10"></i>Sign In</a></li>
                                             {% endif %}
                                         </ul>
                                     </div>
@@ -108,11 +115,24 @@
                 </div>
             </div>
         </div>
+            
+                
+            </header>
+            <div>
+                <h4 class="mb-0 me-2">Store Status</h4> 
+            </div>
+            <div onload="checkOpenClose()" class="d-inline-flex align-items-center">
+                
+                <h4 id="status" class="mb-0 me-2 fs-3 badge"></h4>
+                <p id="date-time" class="mb-0"></p> <!-- Date and time display -->
+
+        </div>
+        
         <div class="header-bottom header-bottom-bg-color sticky-bar">
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1 d-block d-lg-none">
-                        <a href="{% url 'core:index' %}"><img src="{% static 'assets/imgs/theme/hehe.jpg' %}" alt="logo" /></a>
+                        <a href="{% url 'core:index' %}"><img id="logo" class="ratio ratio-1x1" src="{% static 'assets/imgs/theme/oldsaints.png' %}" alt="logo" /></a>
                     </div>
                     <div class="header-nav d-none d-lg-flex">
                         <div class="main-categori-wrap d-none d-lg-block">
@@ -133,6 +153,8 @@
                                     </ul>
 
                                 </div>
+
+                                <div class="more_categories"><span class="icon"></span> <span class="heading-sm-1">Show more...</span></div>
                             </div>
                         </div>
                         <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
@@ -155,7 +177,9 @@
                                         </ul>
                                     </li>
 
-                                    
+                                    <li>
+                                        <a href="{% url 'core:product-list'  %}">Search By</a>
+                                    </li>
 
                                     <li>
                                         <a href="{% url 'core:vendor-list' %}">Shops </a>
@@ -181,54 +205,117 @@
                         </div>
                     </div>
                     
-                    <div class="header-action-icon-2 d-block d-lg-none">
-                        <!-- Burger Icon -->
-                        <div class="burger-icon burger-icon-white">
-                            <span class="burger-icon-top"></span>
-                            <span class="burger-icon-mid"></span>
-                            <span class="burger-icon-bottom"></span>
+                    <!-- BURGER ICON -->
+                        <div class="header-action-icon-2 d-block d-lg-none">
+                            <div class="burger-icon burger-icon-white" onclick="toggleMenu()">
+                                <span class="burger-icon-top"></span>
+                                <span class="burger-icon-mid"></span>
+                                <span class="burger-icon-bottom"></span>
+                            </div>
+
+                            <!-- MOBILE MENU -->
+                            <div id="mobileMenu" class="mobile-menu">
+                                <!-- Close Button -->
+                                <button onclick="toggleMenu()" class="close-btn">✖</button>
+
+                                <!-- Navigation Links -->
+                                <nav class="menu-nav">
+                                    <a href="{% url 'core:index' %}" class="menu-item">Home</a>
+                                    <a href="{% url 'core:vendor-list' %}" class="menu-item">Shops</a>
+                                    <a href="{% url 'core:dashboard' %}" class="menu-item">My Dashboard</a>
+                                    <a href="{% url 'core:product-list' %}" class="menu-item">Search By</a>
+                                    <a href="{% url 'core:purchase_guide' %}" class="menu-item">Purchase Guide</a>
+                                    <a href="{% url 'core:privacy_policy' %}" class="menu-item">Privacy Policy</a>
+                                    <a href="{% url 'core:terms_of_service' %}" class="menu-item">Terms of Service</a>
+                                    <a href="{% url 'core:contact' %}" class="menu-item">Contact Us</a>
+                                </nav>
+                            </div>
                         </div>
-                    
-                        <!-- Menu hidden by default -->
-                        <ul class="mobile-menu hidden bg-black text-white">
-                          <li>
-                            <a href="{% url 'core:dashboard' %}" class="flex items-center text-white hover:text-gray-300">
-                              <i class="fi fi-rs-user mr-2"></i> My Account
-                            </a>
-                          </li>
-                          <li>
-                            <a href="{% url 'core:contact' %}" class="flex items-center text-white hover:text-gray-300">
-                              <i class="fa-solid fa-phone mr-2"></i> Support
-                            </a>
-                          </li>
-                          <li>
-                            <a href="{% url 'core:dashboard' %}" class="flex items-center text-white hover:text-gray-300">
-                              <i class="fi fi-rs-settings-sliders mr-2"></i> Setting
-                            </a>
-                          </li>
-                          {% if request.user.is_authenticated %}
-                          <li>
-                            <a href="{% url 'userauths:sign-out' %}" class="flex items-center text-white hover:text-gray-300">
-                              <i class="fi fi-rs-sign-out mr-2"></i> Sign out
-                            </a>
-                          </li>
-                          {% else %}
-                          <li>
-                            <a href="{% url 'userauths:sign-in' %}" class="flex items-center text-white hover:text-gray-300">
-                              <i class="fi fi-rs-sign-in mr-2"></i> Sign In
-                            </a>
-                          </li>
-                          {% endif %}
-                        </ul>
-                      </div>
-                    
-                    <script>
-                        // JavaScript to toggle the menu when burger icon is clicked
-                        document.querySelector('.burger-icon').addEventListener('click', function() {
-                            const menu = document.querySelector('.mobile-menu');
-                            menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'block' : 'none';
-                        });
-                    </script>
+
+                        <!-- CSS -->
+                        <style>
+                            /* Mobile Menu - Hidden by default */
+                            .mobile-menu {
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                width: 100vw;
+                                height: 100vh;
+                                background: rgba(0, 0, 0, 0.95);
+                                z-index: 9999;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                transform: translateY(-100%);
+                                transition: transform 0.3s ease-in-out;
+                            }
+
+                            /* Show the menu */
+                            .mobile-menu.show {
+                                transform: translateY(0);
+                            }
+
+                            /* Close Button */
+                            .close-btn {
+                                position: absolute;
+                                top: 15px;
+                                right: 20px;
+                                font-size: 2rem;
+                                color: white;
+                                background: none;
+                                border: none;
+                                cursor: pointer;
+                            }
+
+                            /* Navigation Links */
+                            .menu-nav {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                width: 100%;
+                                text-align: center;
+                            }
+
+                            .menu-item {
+                                display: block;
+                                width: 100%;
+                                padding: 15px;
+                                color: white;
+                                text-decoration: none;
+                                font-size: 1.5rem;
+                                border-bottom: 1px solid #444;
+                                transition: background 0.3s;
+                            }
+
+                            .menu-item:hover {
+                                background: rgba(255, 255, 255, 0.1);
+                            }
+
+                            /* Burger Icon */
+                            .burger-icon {
+                                cursor: pointer;
+                                display: flex;
+                                flex-direction: column;
+                                gap: 5px;
+                                padding: 10px;
+                            }
+
+                            .burger-icon span {
+                                display: block;
+                                width: 30px;
+                                height: 4px;
+                                background: white;
+                            }
+                        </style>
+
+                        <!-- JavaScript -->
+                        <script>
+                            function toggleMenu() {
+                                document.getElementById("mobileMenu").classList.toggle("show");
+                            }
+                        </script>
+
 
 
                     <div class="header-action-right d-block d-lg-none">
@@ -249,6 +336,26 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="header-action-icon-2">
+                                <a href="{% url 'core:dashboard' %}">
+                                    <img class="svgInject" alt="Saints Online" src="{% static 'assets/imgs/theme/icons/icon-user.svg' %}" />
+                                </a>
+                                <a href="{% url 'core:dashboard' %}"><span class="lable ml-0">Account</span></a>
+                                <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
+                                    <ul>
+                                        <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>My Account</a></li>
+                                        <li><a href="{% url 'useradmin:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>Admin Dashboard</a></li>
+                                        <!-- <li><a href="#"><i class="fi fi-rs-location-alt mr-10"></i>Order Tracking</a></li> -->
+                                        <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-settings-sliders mr-10"></i>Setting</a></li>
+
+                                        {% if request.user.is_authenticated %}
+                                        <li><a href="{% url 'userauths:sign-out' %}"><i class="fi fi-rs-sign-out mr-10"></i>Sign out</a></li>
+                                        {% else %}
+                                        <li><a href="{% url 'userauths:sign-in' %}"><i class="fi fi-rs-sign-in mr-10"></i>Sign In</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -267,15 +374,11 @@
             </div>
         </div>
     </header>
-
-    {% block content %}
-
-
-
-    {% endblock content %}
+    {% block page %}
 
 
 
+    {% endblock page %}
     <footer class="main">
         <section class="newsletter mb-15">
             <div class="container">
@@ -369,6 +472,44 @@
         </div>
     </footer>
 
+    <script>
+        function checkOpenClose() {
+            var currentDate = new Date();
+            var currentHour = currentDate.getHours();
+            var status = document.getElementById("status");
+            var timestamp = document.getElementById("date-time");
+            var statusMessage = "";
+            var statusColor = "";
+            var timeColor = "";
+
+            // Check if the time is between 8 AM and 5 PM
+            if (currentHour >= 8 && currentHour < 17) {
+                statusMessage = "Open";
+                statusColor = "green"; // Green text for Open
+                timeColor = "green"; // Time text should also be green when open
+                status.classList.add('bg-success')
+            }
+            // Check if the time is between 6 PM and 7 AM
+            else if (currentHour >= 18 || currentHour < 7) {
+                statusMessage = "Closed";
+                statusColor = "red"; // Red text for Closed
+                timeColor = "red"; // Time text should also be red when closed
+                status.classList.add('bg-danger')
+            }
+
+            // Display the status message with the appropriate color
+            status.innerText = statusMessage;
+            
+
+            // Show the current date and time with the appropriate color
+            var dateString = currentDate.toLocaleString();
+            timestamp.innerText = "Current Date and Time: " + dateString;
+            timestamp.style.color = timeColor; // Apply color to the time text
+        }
+
+        // Update the status and time every second
+        setInterval(checkOpenClose, 1000);
+    </script>
     <script data-cfasync="false" src="{% static '/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script>
     <script src="{% static 'assets/js/vendor/modernizr-3.6.0.min.js' %}"></script>
     <script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
@@ -394,6 +535,7 @@
     <script src="{% static 'assets/js/main.js' %}"></script>
     <script src="{% static 'assets/js/shop.js' %}"></script>
     <script src="{% static 'assets/js/function.js' %}"></script>
-</body>
 
+</body>
+{% endblock content %}
 </html>

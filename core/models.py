@@ -162,14 +162,10 @@ class CartOrder(models.Model):
     country = models.CharField(max_length=100, null=True, blank=True)    
 
     price = models.DecimalField(max_digits=12, decimal_places=2, default="1.99")
-    vat = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
+    vat = models. DecimalField(max_digits=12, decimal_places=2, default="0.00")
     saved = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
+
     coupons = models.ManyToManyField("core.Coupon", blank=True)
-
-    shipping_method = models.CharField(max_length=100, null=True, blank=True)
-
-    tracking_id = models.CharField(max_length=100, null=True, blank=True)
-    tracking_website_address = models.CharField(max_length=100, null=True, blank=True)
 
     paid_status = models.BooleanField(default=False)
     order_date = models.DateTimeField(auto_now_add=False, null=True, default=timezone.now)
