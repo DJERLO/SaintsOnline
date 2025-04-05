@@ -238,7 +238,7 @@ ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True  # Default is True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 ACCOUNT_FORMS = {
-    'reset_password_from_key': 'attendance.forms.MyCustomResetPasswordKeyForm',
+    'reset_password_from_key': 'userauths.forms.MyCustomResetPasswordKeyForm',
 }
 
 

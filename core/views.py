@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from requests import session
@@ -101,19 +102,31 @@ def product_detail_view(request, pid):
     # Getting all reviews
     reviews = ProductReview.objects.filter(product=product)
 
+    # Count how many reviews exist for each rating (5 to 1)
+    rating_counts = {str(i): reviews.filter(rating=i).count() for i in range(1, 6)}
+
     # Getting average reviews
     average_rating = ProductReview.objects.filter(product=product).aggregate(rating=Avg('rating'))
 
     # Product Review Form
     review_form = ProductReviewForm()
 
-    make_review = True 
+    make_review = False
 
     if request.user.is_authenticated:
+        # Check if the user has purchased this product in any of their orders
+        purchased_products = CartOrderProducts.objects.filter(
+            order__user=request.user, 
+            order__paid_status=True, 
+            item=product.title
+        ).values_list('order', flat=True).distinct()
+
+        # Check if the user has already made a review for this product
         user_review_count = ProductReview.objects.filter(user=request.user, product=product).count()
 
-        if user_review_count > 0:
-            make_review = False
+        # Allow review only if the user has purchased the product and hasn't reviewed it yet
+        if purchased_products and user_review_count < len(purchased_products):
+            make_review = True
     
 
 
@@ -128,7 +141,8 @@ def product_detail_view(request, pid):
         "reviews": reviews,
         "products":  products,
         "products": related_products,  
-        "tags": product.tags.all(), 
+        "tags": product.tags.all(),
+        'rating_counts': rating_counts,
     }
     return render(request, 'core/product-detail.html', context)
 
@@ -232,6 +246,7 @@ def add_to_cart(request):
         'title': request.GET['title'],
         'qty': request.GET['qty'],
         'price': request.GET['price'],
+        'cost': request.GET['cost'],
         'image': request.GET['image'],
         'pid': request.GET['pid'],
     }
@@ -269,6 +284,7 @@ def delete_item_from_cart(request):
             cart_data = request.session['cart_data_obj']
             del request.session['cart_data_obj'][product_id]
             request.session['cart_data_obj'] = cart_data
+            print(cart_data)
     
     cart_total_amount = 0
     if 'cart_data_obj' in request.session:
@@ -364,7 +380,9 @@ def save_checkout_info(request):
 
             # Getting total amount for The Cart
             for p_id, item in request.session['cart_data_obj'].items():
+                print(item['cost'])
                 cart_total_amount += int(item['qty']) * float(item['price'])
+                
 
                 cart_order_products = CartOrderProducts.objects.create(
                     order=order,
@@ -373,6 +391,7 @@ def save_checkout_info(request):
                     image=item['image'],
                     qty=item['qty'],
                     price=item['price'],
+                    cost=item['cost'],
                     total=float(item['qty']) * float(item['price'])
                 )
 
@@ -464,9 +483,13 @@ def payment_completed_view(request, oid=None):
     
     # Calculate the cart total amount
     for p_id, item in cart_data.items():
+        print(item['pid'])
+        product = Product.objects.get(pid=item['pid'])
         qty = int(item.get('qty', 0))
+        product.stock_count = int(product.stock_count) - int(qty)
         price = float(item.get('price', 0.0))
         cart_total_amount += qty * price
+        product.save()
 
     # If an order ID (oid) is provided, handle it as a paid order
     order = None

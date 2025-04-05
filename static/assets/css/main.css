@@ -4253,6 +4253,11 @@ table .product-thumbnail img {
     background-color: #f74b81;
 }
 
+.product-cart-wrap .product-badges span.out  {
+    background-color: #13080b;
+}
+
+
 .product-cart-wrap .product-badges span.new {
     background-color: #3BB77E;
 }

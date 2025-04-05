@@ -5,6 +5,8 @@ app_name = "useradmin"
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
+    path("generate-reports/", views.reports, name="generate-reports"),
+    path("generate-reports/<str:recurrent>", views.reports, name="generate-reports-recurrent"),
     path("products/", views.products, name="dashboard-products"),
     path("add-products/", views.add_product, name="dashboard-add-products"),
     path("edit-products/<pid>/", views.edit_product, name="dashboard-edit-products"),

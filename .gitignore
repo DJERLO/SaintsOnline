@@ -2,3 +2,4 @@ venv/
 .env
 sshkey.txt
 sshkey.txt.pub
+staticfiles/

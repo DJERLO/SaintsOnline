@@ -1,5 +1,7 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.db.models import Sum
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
@@ -8,8 +10,12 @@ from core.models import CartOrder, CartOrderProducts, Product, Category, Product
 from userauths.models import Profile, User
 from useradmin.forms import AddProductForm
 from useradmin.decorators import admin_required
+from django.db.models import F, ExpressionWrapper, DecimalField
 from django.contrib.auth.decorators import user_passes_test
-import datetime
+import datetime as dt
+from django.utils import timezone
+from django.db.models import Sum
+from django.db.models.functions import Substr
 
 def is_admin(user):
     return user.groups.filter(name='Staff').exists()
@@ -22,7 +28,7 @@ def dashboard(request):
     revenue = 0  # Placeholder for total revenue. Replace with actual query when ready.
     
     revenue = CartOrder.objects.filter(paid_status=True).aggregate(price=Sum("price"))
-    this_month = datetime.datetime.now().month
+    this_month = dt.datetime.now().month
     monthly_revenue = CartOrder.objects.filter(paid_status=True, order_date__month=this_month).aggregate(price=Sum("price"))
     
     total_orders_count = CartOrder.objects.all()
@@ -42,6 +48,127 @@ def dashboard(request):
         "total_orders_count": total_orders_count,
     }
     return render(request, "useradmin/dashboard.html", context)
+
+@user_passes_test(is_admin)
+def reports(request, recurrent="Daily"):
+    user = request.user
+    now = timezone.now()
+    today = now.date()
+    this_week_start = today - dt.timedelta(days=today.weekday())  # Monday
+    this_month = now.month
+    this_year = now.year
+
+    order = CartOrder.objects.filter(paid_status=True).order_by("-id")
+
+    # Total revenue (all time)
+    total_revenue = CartOrder.objects.filter(paid_status=True).aggregate(price=Sum("price"))["price"] or 0
+
+    # Daily revenue
+    daily_revenue = CartOrder.objects.filter(paid_status=True, order_date=today).aggregate(price=Sum("price"))["price"] or 0
+
+    # Daily product sales and revenue
+    if recurrent == "Daily":
+        # Daily revenue
+        revenue = CartOrder.objects.filter(paid_status=True, order_date=today).aggregate(price=Sum("price"))["price"] or 0    
+
+         # 🔥 Daily product sales Qty
+        sales = CartOrderProducts.objects.filter(
+            order__paid_status=True,
+            order__order_date__date=today
+        ).annotate(
+            order_num=Substr('order__oid', 2),  # Remove the '#' symbol (start from the second character)
+            qty_sold=Sum('qty'),
+            total_sold=Sum('total'),
+            total_costing=Sum('cost'),
+            order_date=F('order__order_date')  # Accessing the order_date field from CartOrder model
+        ).values(
+            'item',
+            'order_num',  # This will contain the order number without the '#'
+            'order_date',  # This will contain the order date
+            'qty_sold',
+            'total_sold',
+            'total_cost'
+        )   
+    
+    if recurrent == "Weekly":
+
+        # Weekly revenue
+        revenue = CartOrder.objects.filter(
+            paid_status=True,
+            order_date__gte=this_week_start,
+            order_date__lte=today
+        ).aggregate(price=Sum("price"))["price"] or 0
+        
+        # 🔥 Weekly product sales Qty
+        sales = CartOrderProducts.objects.filter(
+            order__paid_status=True,
+            order__order_date__date__gte=this_week_start
+        ).annotate(
+            order_num=Substr('order__oid', 2),  # Remove the '#' symbol (start from the second character)
+            qty_sold=Sum('qty'),
+            total_sold=Sum('total'),
+            total_costing=Sum('cost'),
+            order_date=F('order__order_date')  # Accessing the order_date field from CartOrder model
+        ).values(
+            'item',
+            'order_num',  # This will contain the order number without the '#'
+            'order_date',  # This will contain the order date
+            'qty_sold',
+            'total_sold',
+            'total_cost'
+        )
+        
+
+    if recurrent == "Monthly":
+         # Monthly revenue
+        revenue = CartOrder.objects.filter(
+            paid_status=True,
+            order_date__month=this_month,
+            order_date__year=this_year
+        ).aggregate(price=Sum("price"))["price"] or 0
+        
+        # 🔥 Monthly product sales Qty
+        sales = CartOrderProducts.objects.filter(
+            order__paid_status=True,
+            order__order_date__month=this_month,
+            order__order_date__year=this_year
+        ).annotate(
+            order_num=Substr('order__oid', 2),  # Remove the '#' symbol (start from the second character)
+            qty_sold=Sum('qty'),
+            total_sold=Sum('total'),
+            total_costing=Sum('cost'),
+            order_date=F('order__order_date')  # Accessing the order_date field from CartOrder model
+        ).values(
+            'item',
+            'order_num',  # This will contain the order number without the '#'
+            'order_date',  # This will contain the order date
+            'qty_sold',
+            'total_sold',
+            'total_cost'
+        )
+
+
+    total_orders_count = CartOrder.objects.count()
+    all_products = Product.objects.all()
+    all_categories = Category.objects.all()
+    new_customers = User.objects.all().order_by("-id")[:6]
+    latest_orders = CartOrder.objects.order_by("-id")[:10]
+
+    context = {
+        "user": user,
+        "recurrent": recurrent,
+        "total_revenue": total_revenue,
+        "daily_revenue": daily_revenue,
+        "revenue": revenue,
+        "sales": sales,
+        "all_products": all_products,
+        "all_categories": all_categories,
+        "new_customers": new_customers,
+        "latest_orders": latest_orders,
+        "total_orders_count": total_orders_count,
+    }
+
+    return render(request, "useradmin/generate-reports.html", context)
 
 @user_passes_test(is_admin)
 def products(request):

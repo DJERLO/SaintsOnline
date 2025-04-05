@@ -45,9 +45,9 @@
     <header class="header-area header-style-1 header-height-2">
         <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
             <div class="container">
-                <div class="header-wrap">
+                <div class="header-wrap">   
                     <div class="logo logo-width-1">
-                        <a href="/"><img id="logo" class="w-32 md:w-40 max-w-full h-auto" src="{% static 'assets/imgs/theme/oldsaints.png' %}" alt="logo">
+                        <a href="/"><img id="logo" class="w-32 md:w-40 max-w-full h-auto h-25" style="object-fit: cover; aspect-ratio:4/3;" src="{% static 'assets/imgs/theme/owshit.png' %}" alt="logo">
                         </a>
                     </div>
                     <div class="header-right">
@@ -119,11 +119,11 @@
                 
             </header>
             <div>
-                <h4 class="mb-0 me-2">Store Status</h4> 
+                <h4 class="mb-0 me-2">Physical Store Is Now</h4> 
             </div>
             <div onload="checkOpenClose()" class="d-inline-flex align-items-center">
                 
-                <h4 id="status" class="mb-0 me-2 fs-3 badge"></h4>
+                <h5 id="status" class="mb-0 me-2 fs-5 badge"></h5>
                 <p id="date-time" class="mb-0"></p> <!-- Date and time display -->
 
         </div>
@@ -132,7 +132,7 @@
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1 d-block d-lg-none">
-                        <a href="{% url 'core:index' %}"><img id="logo" class="ratio ratio-1x1" src="{% static 'assets/imgs/theme/oldsaints.png' %}" alt="logo" /></a>
+                        <a href="{% url 'core:index' %}"><img id="logo" class="ratio ratio-1x1" src="{% static 'assets/imgs/theme/owshit.png' %}" alt="logo" /></a>
                     </div>
                     <div class="header-nav d-none d-lg-flex">
                         <div class="main-categori-wrap d-none d-lg-block">
@@ -490,7 +490,7 @@
                 status.classList.add('bg-success')
             }
             // Check if the time is between 6 PM and 7 AM
-            else if (currentHour >= 18 || currentHour < 7) {
+            else if (currentHour >= 17.01 || currentHour < 7.59) {
                 statusMessage = "Closed";
                 statusColor = "red"; // Red text for Closed
                 timeColor = "red"; // Time text should also be red when closed

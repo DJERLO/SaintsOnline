@@ -7,7 +7,22 @@
 <script src="cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
 <script src="{% static 'assets/js/prism.js' %}"></script>
 <link rel="stylesheet" href="{% static 'assets/css/prism.css' %}">
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .stars {
+        display: flex;
+        font-size: 4rem;
+        cursor: pointer;
+    }
+    .star {
+        color: gray;
+        transition: color 0.3s;
+    }
+    .star.selected,
+    .star:hover {
+        color: gold;
+    }
+</style>
     <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -82,9 +97,9 @@
                                                         <input type="hidden" class="product-image-{{ p.id }}" value="{{ p.image.url }}">
                                                         <input type="hidden" class="product-id-{{ p.id }}" value="{{ p.id }}">
                                                         <input type="hidden" class="product-title-{{ p.id }}" value="{{ p.title }}">
-
+                                                        <input type="hidden" class="product-cost-{{ p.id }}" value="{{ p.cost }}">
                                                     
-                                                    <button type="submit" class="button button-add-to-cart add-to-cart-btn" data-index="{{ p.id }}" id="add-to-cart-btn"><i class="fi-rs-shopping-cart"></i>Add to cart</button>
+                                                    <button type="submit" class="button button-add-to-cart add-to-cart-btn" data-index="{{ p.id }}" id="add-to-cart-btn" {% if not p.in_stock %}disabled{% endif %}><i class="fi-rs-shopping-cart"></i>Add to cart</button>
                                                     
                                                 </div>
                                             </div>
@@ -211,26 +226,7 @@
                                                                 <br> -->
                                                                 <h6>{{ average_rating.rating|floatformat:1 }} out of 5.0</h6>
                                                             </div>
-                                                            <div class="progress">
-                                                                <span style="color:Black;">5 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <span style="color:Black;">4 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <span style="color:Black;">3 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <span style="color:Black;">2 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
-                                                            </div>
-                                                            <div class="progress mb-30">
-                                                                <span style="color:Black;">1 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
-                                                            </div>
+                                                            <canvas id="ratingChart"></canvas>
                                                             <a href="#" class="font-xs text-muted">How are ratings calculated?</a>
                                                         </div>
                                                     </div>
@@ -249,14 +245,24 @@
                                                                     <div class="row">
                                                                         <div class="col-12">
                                                                             <div class="form-group">
-                                                                                {{review_form.review}}
-                                                                                <!-- <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9" placeholder="Write Comment"></textarea> -->
+                                                                                
+                                                                                <textarea class="form-control w-100 bg-white" name="review" id="id_review" cols="30" rows="9" placeholder="Write Comment"></textarea>
                                                                             </div>
                                                                         </div>
 
                                                                         <div class="col-12">
                                                                             <div class="form-group">
-                                                                                {{review_form.rating}}
+                                                                                <h4 class="mb-15 add-review">Rate the Product</h4>
+                                                                                <p class="mb-3">Your rating: <span id="ratingValue">0</span> stars</p>
+                                                                                <div class="stars" id="starRating">
+                                                                                    <span class="star" data-value="1">★</span>
+                                                                                    <span class="star" data-value="2">★</span>
+                                                                                    <span class="star" data-value="3">★</span>
+                                                                                    <span class="star" data-value="4">★</span>
+                                                                                    <span class="star" data-value="5">★</span>
+                                                                                </div>
+                                                                                <input type="hidden" name="rating" id="id_rating" value="0" class="rating-value">
+                                                                                
                                                                                 <!-- <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9" placeholder="Write Comment"></textarea> -->
                                                                             </div>
                                                                         </div>
@@ -335,9 +341,7 @@
                                                                 <input type="hidden" class="product-title-{{ p.id }}" value="{{ p.title }}">
                                                                 <div class="d-flex">
                                                                     <button class="add add-to-cart-btn" data-index="{{ p.id }}" style="border: none;" id="add-to-cart-btn"><i class="fi-rs-shopping-cart mr-5"></i>Add</button>
-                                                                    <button style="border: none; background: none;" class="add-to-wishlist" data-product-item="{{p.id}}"><i class="fi-rs-heart" style="fill: aqua;"></i></button>
                                                                 </div>
-                                                                <!-- <button class="add add-to-cart-btn" data-index="{{ p.id }}" style="border: none;" id="add-to-cart-btn"><i class="fi-rs-shopping-cart mr-5"></i>Add</button> -->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -439,4 +443,67 @@
             </div>
         </div>
     </main>
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const ratingValue = document.getElementById('id_rating');
+        const ratingDisplay = document.getElementById('ratingValue');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                let value = this.getAttribute('data-value');
+                ratingDisplay.textContent = value; // Display the selected star value
+                // Set the hidden input value to the selected star value
+                ratingValue.value = value;
+
+                
+                // Reset all stars
+                stars.forEach(s => s.classList.remove('selected'));
+
+                // Highlight up to the selected star
+                for (let i = 0; i < value; i++) {
+                    stars[i].classList.add('selected');
+                }
+            });
+        });
+
+        // Handle form submission
+        const commentForm = document.getElementById('commentForm');
+        
+        commentForm.addEventListener('submit', function(event) {
+
+            window.location.reload(); // Reload the page to reflect the new review
+            
+        });
+
+
+
+        //Chart
+         // Sample rating data (Replace this with Django data)
+         const allReviews = {{ rating_counts|safe }}; // Example: Replace with dynamic data
+         const ratingData = {
+            labels: ["5 Stars", "4 Stars", "3 Stars", "2 Stars", "1 Star"],
+            datasets: [{
+                label: "Number of Ratings",
+                data: [allReviews["5"], allReviews["4"], allReviews["3"], allReviews["2"], allReviews["1"]], // Example: Replace with dynamic data
+                backgroundColor: ["#FFD700", "#C0C0C0", "#CD7F32", "#999999", "#555555"],
+                borderRadius: 5
+            }]
+        };
+
+        // Chart Configuration
+        const config = {
+            type: "bar",
+            data: ratingData,
+            options: {
+                indexAxis: "y", // Horizontal bars
+                responsive: true,
+                scales: {
+                    x: { beginAtZero: true }
+                }
+            }
+        };
+
+        // Render Chart
+        new Chart(document.getElementById("ratingChart"), config);
+
+    </script>
 {% endblock page %}

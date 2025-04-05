@@ -1,53 +1,91 @@
-{% extends 'useradmin/base.html' %}
-{% load static %}
-{% load humanize %}
-{% block content %}
-<section class="content-main">
-    <div class="content-header">
-        <div>
-            <h2 class="content-title card-titles">Products List</h2>
-            <p>Manage all your products from here</p>
-        </div>
-        <div>
-            <a href="{% url 'useradmin:dashboard-add-products' %}" class="btn btn-primary btn-sm rounded">Create Product</a>
-        </div>
-    </div>
-    <div class="card mb-4">
-        <header class="card-header">
-            <div class="row align-items-center">
+    {% extends 'useradmin/base.html' %}
+    {% load static %}
+    {% load humanize %}
+    {% block content %}
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-titles">Products List</h2>
+                <p>Manage all your products from here</p>
             </div>
-        </header>
-        <div class="card-body">
-
-            {% for p in all_products %}
-            <article class="itemlist">
-                <div class="row align-items-center">
-                  
-                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                        <a class="itemside" href="">
-                            <div class="left">
-                                <img src="{{p.image.url}}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 15px" class="img-sm img-thumbnail" alt="Item" />
-                            </div>
-                            <div class="info">
-                                <h6 class="mb-0 product-list">{{p.title}}</h6>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-sm-2 col-4 col-price"><span>₱ {{p.price|floatformat:2}}</span></div>
-                    <div class="col-lg-2 col-sm-2 col-4 col-status">
-                        <span class="badge alert-dark">{{p.status}}</span>
-                    </div>
-                    <div class="col-lg-1 col-sm-2 col-4 col-date">
-                        <span>{{p.date}}</span>
-                    </div>
-                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                        <a href="{% url 'useradmin:dashboard-edit-products'  p.pid %}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                        <a href="{% url 'useradmin:dashboard-delete-products'  p.pid %}" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                    </div>
-                </div>
-            </article>
-            {% endfor %}
-
+            <div>
+                <a href="{% url 'useradmin:dashboard-add-products' %}" class="btn btn-primary btn-sm rounded">Create Product</a>
+            </div>
         </div>
-</section>
-{% endblock %}
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row align-items-center">
+                </div>
+            </header>
+            <div class="card-body">
+                
+                
+                <!-- Bootstrap 5 Table for Products -->
+                <table id="product-table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Image</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in all_products %}
+                        <tr>
+                            <!-- Product Image -->
+                            <td>
+                                <img src="{{ p.image.url }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 15px" class="img-sm img-thumbnail" alt="Item" />
+                            </td>
+                            <!-- Product Name -->
+                            <td>{{ p.title }}</td>
+                            <!-- Price -->
+                            <td>₱ {{ p.price|floatformat:2 }}</td>
+                            <td>{{p.category}}</td>
+                            <!-- Status -->
+                            <td><span class="badge alert-dark">{{ p.status }}</span></td>
+                            <!-- Date -->
+                            <td>{{ p.date }}</td>
+                            <!-- Actions -->
+                            <td class="">
+                                <a href="{% url 'useradmin:dashboard-edit-products' p.pid %}" class="btn btn-sm font-sm rounded btn-brand">
+                                    <i class="material-icons md-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'useradmin:dashboard-delete-products' p.pid %}" class="btn btn-sm font-sm btn-light rounded">
+                                    <i class="material-icons md-delete_forever"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+    </section>
+    <script>
+        let table = new DataTable('#product-table',{
+                    responsive: true,
+                    fixedHeader: true,
+                    
+                    dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +  // Length menu + Filter
+                    '<"row"<"col-sm-12"tr>>' +              // Table
+                    '<"row"<"col-sm-5"i><"col-sm-7"p>>',   // Info + Pagination
+                    searchPanes: {
+                        cascadePanes: true,  // Enable dependent filtering
+                        viewTotal: true      // Show total count in the filter
+                    },
+                    columnDefs: [
+                        {
+                            targets: [3],   // Category column index
+                            searchPanes: {
+                                show: true  // Enable SearchPanes for this column
+                            }
+                        }
+                    ],  
+                        
+                });
+    </script>
+    {% endblock %}

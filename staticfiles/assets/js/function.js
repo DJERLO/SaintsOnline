@@ -144,7 +144,7 @@ $(document).ready(function () {
 
         let product_id = $(".product-id-" + index).val()
         let product_price = $(".current-product-price-" + index).text()
-
+        let product_cost = $(".product-cost-" + index).val()
         let product_pid = $(".product-pid-" + index).val()
         let product_image = $(".product-image-" + index).val()
 
@@ -152,6 +152,7 @@ $(document).ready(function () {
         console.log("Quantity:", quantity);
         console.log("Title:", product_title);
         console.log("Price:", product_price);
+        console.log("Cost:", product_cost);
         console.log("ID:", product_id);
         console.log("PID:", product_pid);
         console.log("Image:", product_image);
@@ -167,6 +168,7 @@ $(document).ready(function () {
                 'qty': quantity,
                 'title': product_title,
                 'price': product_price,
+                'cost': product_cost,
             },
             dataType: 'json',
             beforeSend: function () {
@@ -214,7 +216,7 @@ $(document).ready(function () {
 
 
 
-    $(".update-product").on("click", function () {
+    $(".update-product").on("input", function () {
 
         let product_id = $(this).attr("data-product")
         let this_val = $(this)
@@ -231,7 +233,7 @@ $(document).ready(function () {
             },
             dataType: "json",
             beforeSend: function () {
-                this_val.hide()
+                this_val.show()
             },
             success: function (response) {
                 this_val.show()

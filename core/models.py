@@ -100,9 +100,10 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
     old_price = models.DecimalField(max_digits=12, decimal_places=2, default="2.99")
     vat = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
+    cost = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
     specifications = models.TextField(null=True, blank=True)
     type = models.CharField(max_length=100, default="What is the product type?", null=True, blank=True)
-    stock_count = models.CharField(max_length=100, default="Item stock count?", null=True, blank=True)
+    stock_count = models.IntegerField(default=0, null=True, blank=True)
     life = models.CharField(max_length=100, default="item life spand?", null=True, blank=True)
     mfd = models.DateField(auto_now_add=False, null=True, blank=True)
 
@@ -125,6 +126,21 @@ class Product(models.Model):
 
     class Meta:
         verbose_name_plural = "Product"
+
+    def save(self):
+        if self.stock_count <= 0:
+            self.in_stock = False
+        
+        if self.stock_count > 0:
+            self.in_stock = True
+        
+        super(Product, self).save()
+        if self.price < self.old_price:
+            self.featured = True
+        else:
+            self.featured = False
+        super(Product, self).save()
+
 
     def product_image(self):
         return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
@@ -191,13 +207,22 @@ class CartOrderProducts(models.Model):
     image = models.CharField(max_length=200)
 
     qty = models.IntegerField(default=0)
-    price = models.DecimalField(max_digits=12, decimal_places=2, default="1.99")
-    total = models.DecimalField(max_digits=12, decimal_places=2, default="1.99")
-
+    price = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
+    total = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
+    cost = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
+    total_cost = models.DecimalField(max_digits=12, decimal_places=2, default="1.99")
     product_status = models.CharField(choices=STATUS_CHOICES, max_length=30, default="processing")
 
     class Meta:
         verbose_name_plural = "Cart Order Items"
+
+    def save(self, *args, **kwargs):
+        if self.cost is None:
+            self.cost = 0
+        if self.qty is None:
+            self.qty = 0
+        self.total_cost = float(self.cost) * int(self.qty)
+        super(CartOrderProducts, self).save(*args, **kwargs)
 
     def order_img(self):
         return mark_safe('<img src="/media/%s" width="50" height="50" />' % (self.image))

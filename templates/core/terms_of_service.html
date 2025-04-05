@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-xl-10 col-lg-12 m-auto">
                         <div class="row">
-                            <div class="col-lg-9">
+                            <div class="col-lg-12">
                                 <div class="single-page pr-30 mb-lg-0 mb-sm-5">
                                     <div class="single-header style-2">
                                         <h2>Terms of Service</h2>
@@ -107,29 +107,6 @@
                                         <p>We value your trust and strive to provide a safe, secure, and legally compliant shopping experience. If you have any questions about the governing laws or need further clarification, please don’t hesitate to reach out to our customer service team.</p>
                                         <h4>Contact Us</h4>
                                         <p>If you have any questions about these Terms, please <a href="{% url 'core:contact' %}">contact us</a>.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 primary-sidebar sticky-sidebar">
-                                <div class="widget-area">
-                                    <div class="sidebar-widget-2 widget_search mb-50">
-                                        <div class="search-form">
-                                            <form action="{% url 'core:search' %}" method="GET">
-                                                <input type="text" placeholder="Search for items..." name="q" />
-                                                <button class="material-symbols-outlined" type="submit"><span class="material-symbols-outlined">search</span></button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="sidebar-widget widget-category-2 mb-30">
-                                        <h5 class="section-title style-1 mb-30">Category</h5>
-                                        <ul>
-                                            {% for c in categories %}
-                                            <li>
-                                                <a href="{% url 'core:category-product-list' c.cid %}"> <img src="{{ c.image.url }}" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 10px;" />{{c.title}}</a><span class="count">{{c.product_count}}</span>
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
                                     </div>
                                 </div>
                             </div>

@@ -1,32 +1,3 @@
-/***
- Theme Name: Nest
- Description: Grocery, Super Market, eCommerce HTML Template
- Version: 1.0
- License: GNU General Public License v2 or later
- License URI: http://www.gnu.org/licenses/gpl-2.0.html
-==============================
-TABLE CONTENT
- Import Google Fonts
- Include Third Party CSS Library
- GENERAL
- HEADER
- Offcanvas Sidebar
- Search form
- Main header
- Mega menu
- Header layouts
- Page layouts
- Pagination
- Breadcrumb
- CATEGORY PAGES
- SINGLE POST
- Author box
- comment
- Post share social
- WP STYPE
- Custom amine
-***/
-
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@400;500;600;700&display=swap");
 /*import vendors*/
 
@@ -219,21 +190,21 @@ li.hr span {
 /*--- Common Classes---------------------*/
 
 ::-moz-selection {
-    background: #3BB77E;
+    background: #ff0000;
     /* WebKit/Blink Browsers */
-    color: #fff;
+    /* color: #fff; */
 }
 
 ::selection {
-    background: #000000;
+    background: #ff0000;
     /* WebKit/Blink Browsers */
-    color: #fff;
+    /* color: #fff; */
 }
 
 ::-moz-selection {
     background: #3BB77E;
     /* Gecko Browsers */
-    color: #fff;
+    /* color: #fff; */
 }
 
 ::-webkit-input-placeholder {
@@ -387,7 +358,7 @@ input[type=number]:focus,
 }
 
 .text-danger {
-    color: #FD6E6E !important;
+    color: #ff0000 !important;
 }
 
 .text-success {
@@ -415,7 +386,7 @@ input[type=number]:focus,
 }
 
 .text-white {
-    color: #fff !important;
+    color: #ffff !important;
 }
 
 .text-grey-5,
@@ -1558,7 +1529,7 @@ textarea:focus {
 }
 
 .form-group input:focus {
-    background: #ffff !important;
+    background: #ffff;
     border-color: #BCE3C9;
 }
 
@@ -4281,6 +4252,11 @@ table .product-thumbnail img {
 .product-cart-wrap .product-badges span.hot {
     background-color: #f74b81;
 }
+
+.product-cart-wrap .product-badges span.out  {
+    background-color: #13080b;
+}
+
 
 .product-cart-wrap .product-badges span.new {
     background-color: #3BB77E;
@@ -8636,7 +8612,7 @@ span.fi-rs-apps {
     display: inline-block;
     font-size: 16px;
     font-weight: 700;
-    color: #ffffff;
+    /* color: #ffffff; */
     font-family: "Quicksand", sans-serif;
 }
 
@@ -8646,9 +8622,9 @@ span.fi-rs-apps {
     margin-left: 4px;
 }
 
-.main-menu>nav>ul>li>a.active {
+/* .main-menu>nav>ul>li>a.active {
     color: #ffffff;
-}
+} */
 
 .main-menu>nav>ul>li ul.sub-menu {
     position: absolute;
