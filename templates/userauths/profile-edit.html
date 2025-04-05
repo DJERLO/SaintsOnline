@@ -1,8 +1,11 @@
 {% extends 'partial/base.html' %}
 {% block title %} Profile Edit {% endblock %}
+{% load widget_tweaks %}
 {% load static %}
-{% block content %}
-    <main class="main pages">
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% block page %}    
+<main class="main pages">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
@@ -24,7 +27,7 @@
                                         </li>
                                         
                                         <li class="nav-item">
-                                            <a class="nav-link" href="page-login.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+                                            <a class="nav-link" href="{% url 'account_logout' %}"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -42,7 +45,7 @@
                                             </div>
                                             {% endif %}
                                             <div class="card-body mb-2" style="display: flex; align-items: center; gap: 10px;">
-                                                <div>
+                                                <div class="col-md-4">
                                                     {% if profile.image %}
                                                     <span><img src="{{ profile.image.url }}" style="width: 150px; object-fit: cover; border-radius:50%; height:150px;" alt=""></span>
                                                     {% else %}
@@ -50,8 +53,8 @@
 
                                                     {% endif %}
                                                 </div>
-                                                    <div>
-                                                        <form action="" method="POST" enctype="multipart/form-data"> 
+                                                    <div class="col-md-8">
+                                                        <form class="d-inline-grid" action="" method="POST" enctype="multipart/form-data"> 
                                                             {% csrf_token %}
                                                             <div class="mb-3">
                                                                 {{form.full_name}}
@@ -61,6 +64,10 @@
                                                             </div>
                                                             <div class="mb-3">
                                                                 {{form.phone}}
+                                                            </div>
+                                                        
+                                                            <div class="mb-3">  
+                                                                {{form.relative_students}}
                                                             </div>
                                                             <div class="mb-3">
                                                                 {{form.image}}
@@ -83,7 +90,20 @@
             </div>
         </div>
     </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#id_relative_students').select2({
+            placeholder: "Select students",
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('.select2-selection.select2-selection--multiple').css('width', '100%');
+
+    });
+</script>
 
 
-
-{% endblock content %}
+{% endblock page %}

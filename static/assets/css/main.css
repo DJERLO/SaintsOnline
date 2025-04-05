@@ -7698,11 +7698,11 @@ h6.post-title {
     -webkit-transition: all .3s ease 0s;
     transition: all .3s ease 0s;
     border-bottom: 2px solid #000000;
-    background: #fff;
+    background: #000;
 }
 
 .sticky-bar.stick.sticky-white-bg {
-    background-color: #fff;
+    background-color: #000;
 }
 
 .sticky-bar.stick.sticky-blue-bg {

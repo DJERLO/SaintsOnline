@@ -19,11 +19,15 @@ from django.urls import include, path
 
 from django.conf import settings
 from django.conf.urls.static import static
+from allauth.account.views import SignupView
+from django.urls import path
+from userauths.forms import MyCustomSocialSignupForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Include allauth URLs for authentication
     path('accounts/', include('allauth.urls')),  # All auth URLs
+    path('accounts/signup/', SignupView.as_view(form_class=MyCustomSocialSignupForm), name='account_signup'),
     path("", include("core.urls")),
     path("user/", include("userauths.urls")),
     path("useradmin/", include("useradmin.urls")),

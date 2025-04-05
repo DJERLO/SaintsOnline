@@ -1,29 +1,13 @@
 {% extends "account/base_entrance.html" %}
 {% load i18n %}
+{% load static %}
 {% load allauth i18n %}
 {% block content %}
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: rgb(0, 0, 0);
-    }
-     main {
-        background-image: url("/static/assets/imgs/theme/gd.webp");
-        background-size: cover;
-        object-fit: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }  
-</style>
 {% url 'account_logout' as action_url %}
+<link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
 <main>
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="loader d-flex justify-content-center align-content-center"></div>
     <div class="col-md-4 text-center">
         <form id="logoutForm" action="{{action_url}}" method="post">
             {% csrf_token %}
@@ -35,6 +19,6 @@
     // Redirect to login page after 5 seconds
     setTimeout(function() {
         document.getElementById('logoutForm').submit();
-    }, 1000); // 5000 milliseconds = 5 seconds
+    }, 3000); // 5000 milliseconds = 5 seconds
 </script>
 {% endblock %}

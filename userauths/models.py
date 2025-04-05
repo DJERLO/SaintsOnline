@@ -30,7 +30,20 @@ class Profile(models.Model):
     phone = models.CharField(max_length=200) # +234 (456) - 789
     address = models.CharField(max_length=200, null=True, blank=True) 
     country = models.CharField(max_length=200, null=True, blank=True) 
+    
+    #Parent's Details
+    relative_students = models.ManyToManyField(User, blank=True, related_name='parents', symmetrical=False)
+
     verified = models.BooleanField(default=False)
+
+    def is_parent(self):
+        return self.user.groups.filter(name='Parent').exists()
+    
+    def is_student(self):
+        return self.user.groups.filter(name='Student').exists()
+    
+    def is_teacher(self):
+        return self.user.groups.filter(name='Faculty').exists() 
     
     def __str__(self):
         return f"{self.user.username} - {self.full_name} - {self.bio}"

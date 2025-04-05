@@ -1,33 +1,33 @@
 {% extends "useradmin/base.html" %}
 {% load static %}
+{% block title %}{{recurrent}} Financial Report{% endblock title %}
 {% block content %}
 <div class="p-4">
-    <h4 class="text-dark">{{ recurrent }} Product Sales</h4>
+    <h3 class="text-center">{{recurrent}} Financial Report</h3>
     <table class="d-flex justify-content-center" border="0" cellspacing="5" cellpadding="5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">Product Sales Report</h4>
-            <div>
-                <select id="report-filter" class="form-select form-select-sm" style="width: auto;">
-                    <option value="Daily" {% if recurrent == 'Daily' %}selected{% endif %}>Daily</option>
-                    <option value="Weekly" {% if recurrent == 'Weekly' %}selected{% endif %}>Weekly</option>
-                    <option value="Monthly" {% if recurrent == 'Monthly' %}selected{% endif %}>Monthly</option>
-                </select>
-            </div>
-        </div>
-        <tbody>
-            <tr>
-                <td>Minimum date:</td>
-                <td><input type="text" id="min" name="min"></td>
+        
+        <tbody class="text-center d-flex justify-content-center align-items-center">
+            <tr class="mx-2 p-2">
+                <td ><input class="form-control form-control-sm" type="text" id="min" name="min" placeholder="Minimum date:"></td>
             </tr>
-            <tr>
-                <td>Maximum date:</td>
-                <td><input type="text" id="max" name="max"></td>
+            <tr class="mx-2 p-2">
+                <td ><input class="form-control form-control-sm" type="text" id="max" name="max" placeholder="Maximum date:"></td>
+            </tr>
+            <tr class="mx-2 p-2">
+                <td>
+                    <select id="report-filter" class="form-select form-select-sm w-100">
+                        <option value="Daily" {% if recurrent == 'Daily' %}selected{% endif %}>Daily</option>
+                        <option value="Weekly" {% if recurrent == 'Weekly' %}selected{% endif %}>Weekly</option>
+                        <option value="Monthly" {% if recurrent == 'Monthly' %}selected{% endif %}>Monthly</option>
+                        <option value="Yearly" {% if recurrent == 'Yearly' %}selected{% endif %}>Yearly</option>
+                    </select>
+                </td>
+                        
             </tr>
         </tbody>
     </table>
-
     <table id="sales-table" class="table table-sm">
-        <thead>
+        <thead class="table-dark">
             <tr>
                 <th>Date</th> 
                 <th>Order_No</th>
@@ -47,16 +47,18 @@
                 <td>{{ item.total_sold }}</td>
                 <td>{{ item.total_cost }}</td>
             </tr>
-        {% empty %}
-            <tr><td colspan="6" class="text-center">No sales today</td></tr>
         {% endfor %}
         </tbody>
-        <tfoot>
+        <tfoot class="table-dark">
             <tr>
-                <th colspan="3">Total</th>
-                <th id="total-qty">0</th>
-                <th id="total-sold">0</th>
-                <th id="total-cost">0</th>
+                <th colspan="3">Grand Totals (Quantity, Sold, Cost)</th>
+                <th id="total-qty">Total Quantity</th>
+                <th id="total-sold">Gross Sales</th>
+                <th id="total-cost">Total Cost</th>
+            </tr>
+            <tr>
+                <th colspan="5">Net Revenue (Gross Sales - Total Cost)</th>
+                <th class="fs-4" id="total-revenue">₱0.00</th>
             </tr>
         </tfoot>
     </table>
@@ -72,61 +74,114 @@
     document.addEventListener("DOMContentLoaded", function () {
         let minDate, maxDate;
 
+        // Custom filtering function which will search data in column four between two values
+        DataTable.ext.search.push(function (settings, data, dataIndex) {
+            let min = minDate.val();
+            let max = maxDate.val();
+            let date = new Date(data[0]);
+        
+            if (
+                (min === null && max === null) ||
+                (min === null && date <= max) ||
+                (min <= date && max === null) ||
+                (min <= date && date <= max)
+            ) {
+                return true;
+            }
+            return false;
+        });
+
+         // Date filtering
+        minDate = new DateTime('#min', {
+            format: 'MMMM Do YYYY'
+        });
+        maxDate = new DateTime('#max', {
+            format: 'MMMM Do YYYY'
+        });
+
         // Initialize main table with export buttons
         let table = new DataTable('#sales-table', {
-            dom: '<"top"f>rt<"bottom d-flex justify-content-between align-items-center mt-3"lipB><"clear">',
-    buttons: [
-        {
-            extend: 'copyHtml5',
-            text: '<i class="bi bi-clipboard"></i> Copy',
-            className: 'btn btn-sm btn-secondary me-2'
-        },
-        {
-            extend: 'csvHtml5',
-            text: '<i class="bi bi-filetype-csv"></i> CSV',
-            className: 'btn btn-sm btn-info me-2'
-        },
-        {
-            extend: 'excelHtml5',
-            text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-            className: 'btn btn-sm btn-success me-2'
-        },
-        {
-            extend: 'pdfHtml5',
-            text: '<i class="bi bi-filetype-pdf"></i> PDF',
-            className: 'btn btn-sm btn-danger me-2'
-        },
-        {
-            extend: 'print',
-            text: '<i class="bi bi-printer"></i> Print',
-            className: 'btn btn-sm btn-primary'
-        }
-    ],      
+            dom: 'lrBtpi',
+            language: {
+                
+                    emptyPanes: 'There are no panes to display. :/'
+                
+            },
+            columnDefs: [
+                {
+                    targets: [4, 5], // Total Sold, Total Cost
+                    render: function (data, type, row) {
+                        if (type === 'display' || type === 'filter') {
+                            let num = parseFloat(data);
+                            if (!isNaN(num)) {
+                                return '₱' + num.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                        }
+                        return data;
+                    }
+                }
+            ],
+            buttons: [
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="bi bi-clipboard"></i> Copy',
+                    className: 'btn btn-sm btn-secondary m-2'
+                },
+                {
+                    extend: 'csvHtml5',
+                    text: '<i class="bi bi-filetype-csv"></i> CSV',
+                    className: 'btn btn-sm btn-info m-2'
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                    className: 'btn btn-sm btn-success m-2'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="bi bi-filetype-pdf"></i> PDF',
+                    className: 'btn btn-sm btn-danger m-2'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="bi bi-printer"></i> Print',
+                    className: 'btn btn-sm btn-primary m-2'
+                }
+            ],      
             footerCallback: function (row, data, start, end, display) {
                 let totalQty = 0;
                 let totalSold = 0;
                 let totalCost = 0;
 
-                for (let i = start; i < end; i++) {
-                    totalQty += parseFloat(data[i][3]) || 0;
-                    totalSold += parseFloat(data[i][4]) || 0;
-                    totalCost += parseFloat(data[i][5]) || 0;
+                for (let i = 0; i < data.length; i++) {
+                    // Remove peso signs and commas before parsing
+                    totalQty += parseFloat(data[i][3].toString().replace(/[^0-9.-]+/g, '')) || 0;
+                    totalSold += parseFloat(data[i][4].toString().replace(/[^0-9.-]+/g, '')) || 0;
+                    totalCost += parseFloat(data[i][5].toString().replace(/[^0-9.-]+/g, '')) || 0;
                 }
 
-                document.getElementById('total-qty').textContent = totalQty;
-                document.getElementById('total-sold').textContent = totalSold;
-                document.getElementById('total-cost').textContent = totalCost;
+                // Format with peso sign and commas
+                function formatCurrency(amount) {
+                    return '₱' + amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+
+                document.getElementById('total-qty').textContent = totalQty; // Total quantity sold
+                document.getElementById('total-sold').textContent = formatCurrency(totalSold); // Format total sold
+                document.getElementById('total-cost').textContent = formatCurrency(totalCost); // Format total cost
+                document.getElementById('total-revenue').textContent = formatCurrency(totalSold - totalCost); // Revenue calculation
             }
         });
 
-        // Date filtering
-        minDate = new DateTime('#min', { format: 'YYYY-MM-DD' });
-        maxDate = new DateTime('#max', { format: 'YYYY-MM-DD' });
-
+       
+        // Re-draw the table when the min/max date changes
         document.querySelectorAll('#min, #max').forEach((el) => {
             el.addEventListener('change', () => table.draw());
         });
 
+        // Custom filtering function
         document.getElementById('report-filter').addEventListener('change', function () {
             const selected = this.value;
             window.location.href = "/useradmin/generate-reports/" + selected;

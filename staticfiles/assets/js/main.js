@@ -595,7 +595,7 @@
     /*====== Sidebar menu Active ======*/
     function mobileHeaderActive() {
         var navbarTrigger = document.querySelector(".burger-icon"),
-            endTrigger = document.querySelector(".mobile-menu-close"),
+            // endTrigger = document.querySelector(".mobile-menu-close"),
             container = document.querySelector(".mobile-header-close"),
             wrapper4 = document.querySelector("body"),
             overlay = document.createElement("div");
@@ -612,10 +612,10 @@
         });
     
         // Close the menu when the close button is clicked
-        endTrigger.addEventListener("click", function() {
-            container.classList.remove("sidebar-visible");
-            wrapper4.classList.remove("mobile-menu-active");
-        });
+        // endTrigger.addEventListener("click", function() {
+        //     container.classList.remove("sidebar-visible");
+        //     wrapper4.classList.remove("mobile-menu-active");
+        // });
     
         // Close the menu when the overlay is clicked
         overlay.addEventListener("click", function() {

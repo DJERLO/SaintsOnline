@@ -52,6 +52,10 @@
                                                 <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm Password" required>
                                                 <label for="password2">{% trans "Confirm Password" %}</label>
                                             </div>
+                                            <div class="form-floating mb-3 text-dark">
+                                                {{form.group}}
+                                                <label for="id_group">{% trans "Account Type" %}</label>
+                                            </div>
                                             <div class="d-grid">
                                                 <button type="submit" class="btn btn-primary btn-block">{% trans "Sign up" %}</button>
                                             </div>

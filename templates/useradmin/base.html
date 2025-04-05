@@ -3,7 +3,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Admin Dashboard</title>
+        <title>
+            {% block title %}Dashboard{% endblock title %}
+        </title>
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -162,20 +164,6 @@
             
             {% endblock content %}
 
-            <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; St. Clare Student Ecommerce Platform (Samonte & Group)
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
-                </div>
-            </footer>
         </main>
         <script src="{% static 'assets2/js/vendors/jquery-3.6.0.min.js' %}"></script>
         <script src="{% static 'assets2/js/vendors/bootstrap.bundle.min.js' %}"></script>

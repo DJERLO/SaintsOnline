@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'paypal.standard.ipn',
+    'widget_tweaks',
 
     # Custom Apps
     'core',
@@ -238,8 +239,10 @@ ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True  # Default is True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 ACCOUNT_FORMS = {
+    'signup': 'userauths.forms.MyCustomSocialSignupForm',
     'reset_password_from_key': 'userauths.forms.MyCustomResetPasswordKeyForm',
 }
+
 
 
 LOGIN_URL = '/accounts/login/'
@@ -448,7 +451,7 @@ STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
 STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY")
 
 # Email backend (this is for development, use a real email backend in production)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  # Use TLS for security

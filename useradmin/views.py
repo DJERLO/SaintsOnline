@@ -50,9 +50,9 @@ def dashboard(request):
     return render(request, "useradmin/dashboard.html", context)
 
 @user_passes_test(is_admin)
-def reports(request, recurrent="Daily"):
+def reports(request, recurrent="Yearly"):
     user = request.user
-    now = timezone.now()
+    now = timezone.localtime()
     today = now.date()
     this_week_start = today - dt.timedelta(days=today.weekday())  # Monday
     this_month = now.month
@@ -91,7 +91,6 @@ def reports(request, recurrent="Daily"):
         )   
     
     if recurrent == "Weekly":
-
         # Weekly revenue
         revenue = CartOrder.objects.filter(
             paid_status=True,
@@ -147,6 +146,31 @@ def reports(request, recurrent="Daily"):
             'total_cost'
         )
 
+    if recurrent == "Yearly":
+        # Yearly revenue
+        revenue = CartOrder.objects.filter(
+            paid_status=True,
+            order_date__year=this_year
+        ).aggregate(price=Sum("price"))["price"] or 0
+        
+        # 🔥 Yearly product sales Qty
+        sales = CartOrderProducts.objects.filter(
+            order__paid_status=True,
+            order__order_date__year=this_year
+        ).annotate(
+            order_num=Substr('order__oid', 2),  # Remove the '#' symbol (start from the second character)
+            qty_sold=Sum('qty'),
+            total_sold=Sum('total'),
+            total_costing=Sum('cost'),
+            order_date=F('order__order_date')  # Accessing the order_date field from CartOrder model
+        ).values(
+            'item',
+            'order_num',  # This will contain the order number without the '#'
+            'order_date',  # This will contain the order date
+            'qty_sold',
+            'total_sold',
+            'total_cost'
+        )
 
     total_orders_count = CartOrder.objects.count()
     all_products = Product.objects.all()
