@@ -1,11 +1,4 @@
 @charset "UTF-8";
-/*!
- * Bootstrap v5.0.0-beta2 (https://getbootstrap.com/)
- * Copyright 2011-2022 The Bootstrap Authors
- * Copyright 2011-2022 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
-
 :root {
     --bs-blue: #0d6efd;
     --bs-indigo: #6610f2;
@@ -1300,7 +1293,7 @@ progress {
     }
     .col-lg-3 {
         flex: 0 0 auto;
-        width: 25%
+        width: 20%
     }
     .col-lg-4 {
         flex: 0 0 auto;

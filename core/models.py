@@ -98,7 +98,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to=user_directory_path, default="product.jpg")
     description = models.TextField(null=True, blank=True, default="This is the product")
     price = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
-    old_price = models.DecimalField(max_digits=12, decimal_places=2, default="2.99")
+    old_price = models.DecimalField(max_digits=12, decimal_places=2, default="2.99", blank=True)
     vat = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
     cost = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
     specifications = models.TextField(null=True, blank=True)
@@ -122,7 +122,7 @@ class Product(models.Model):
     sku = ShortUUIDField(unique=True, length=4, max_length=10, prefix="sku", alphabet="abcdefgh")
 
     date = models.DateField(auto_now_add=True)
-    updated = models.DateField(null=True, blank=True)
+    updated = models.DateField(auto_now=True)
 
     class Meta:
         verbose_name_plural = "Product"
@@ -135,11 +135,6 @@ class Product(models.Model):
             self.in_stock = True
         
         super(Product, self).save()
-        if self.price < self.old_price:
-            self.featured = True
-        else:
-            self.featured = False
-        super(Product, self).save()
 
 
     def product_image(self):
@@ -149,6 +144,8 @@ class Product(models.Model):
         return self.title
 
     def get_precentage(self):
+        if self.old_price == 0:
+            return "N/A"  # or any other custom string
         new_price = (self.price / self.old_price) * 100
         return new_price
     

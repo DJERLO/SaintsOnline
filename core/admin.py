@@ -8,8 +8,11 @@ class ProductImageAdmin(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageAdmin]
-    list_editable = ['title', 'price', 'featured','stock_count', 'product_status']
-    list_display = ['product_image', 'title', 'price', 'category', 'cost', 'stock_count','featured', 'product_status', 'pid']
+    list_editable = ['price', 'featured','stock_count', 'product_status']
+    list_display = ['title', 'category', 'price', 'cost', 'stock_count','featured', 'product_status']
+    list_filter = ['category', 'product_status', 'date']
+    search_fields = ['title']
+    list_display_links = ['title']
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['title', 'category_image']

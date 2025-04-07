@@ -25,6 +25,8 @@ from django.core import serializers
 import base64
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
+from django.utils import timezone
 
 # Load environment variables
 load_dotenv()
@@ -33,8 +35,22 @@ def index(request):
     #products = Product.objects.all().order_by('-id')
     products = Product.objects.filter(product_status="publish", featured=True)
 
+    for product in products:
+        reviews = ProductReview.objects.filter(product=product )
+
+    # Define trend logic for each category
+    hot_products = products.filter(stock_count__gt=100) # Products with more than 100 in stock (or based on another metric like sales volume)
+    sale_products = products.filter(price__lt=F('old_price'))  #Products with price lower than the old price
+    best_products = reviews.filter(rating__gte=4)  #Products with ratings of 4 or higher (adjust with your actual rating field)
+    new_products = products.filter(date__gte=timezone.localtime() - timedelta(days=30), stock_count__gt=0)
+
+
     context = {
-        "products": products
+        "products": products,
+        "hot_products": hot_products,
+        "sale_products": sale_products,
+        "best_products": best_products,
+        "new_products": new_products,
     }
 
     return render(request, 'core/index.html', context)

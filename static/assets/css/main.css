@@ -991,6 +991,10 @@ h5.widget-title {
     color: #f74b81;
 }
 
+.text-out {
+    color: rgb(255, 0, 0);
+}
+
 .text-new {
     color: #55bb90;
 }
@@ -1126,8 +1130,8 @@ button[type='submit'] {
     padding: 15px 40px;
     color: #ffffff;
     border: none;
-    background-color: #3BB77E;
-    border: 1px solid #29A56C;
+    background-color: #000000;
+    border: 1px solid #000000;
     border-radius: 10px;
 }
 
@@ -4240,7 +4244,7 @@ table .product-thumbnail img {
     display: inline-block;
     font-size: 12px;
     line-height: 1;
-    border-radius: 15px 0 20px 0;
+    
     color: #fff;
     padding: 9px 20px 10px 20px;
 }

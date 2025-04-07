@@ -28,37 +28,55 @@
                         </div>
                     </section>
                     <!--End hero-->
-                    <section class="product-tabs section-padding position-relative">
+               
+                 
+                    <hr>
+                    <!--All Products-->
+                    <section class="product-tabs section-padding position-relative mt-1">
                         <div class="section-title style-2">
-                            <h3>Popular Products</h3>
+                            <h3>All Products</h3>
                         </div>
                         <!--End nav-tabs-->
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
-                                <div class="row product-grid-4">
-                                    
+                                <div class="row product-grid-4 d-flex justify-content-center">
                                     {% for p in products %}
-                                    <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
-                                        <div class="product-cart-wrap mb-30">
+                                    <div class="col-12 col-xs-6 col-sm-6 col-lg-3">
+                                        <div class="product-cart-wrap mb-30" style="max-width: 220px; max-height: 375px;">
                                             <div class="product-img-action-wrap">
-                                                <div class="product-img product-img-zoom position-relative">
+                                                <div class="product-img product-img-zoom position-relative ratio ratio-1x1">
                                                     <a href="{% url 'core:product-detail' p.pid %}">
                                                         <img class="default-img" src="{{ p.image.url }}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
                                                         <img class="hover-img" src="{{ p.image.url }}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
                                                     </a>
-                                                
-                                                    {% if p.in_stock == 0 %}  <!-- Assuming 'stock' is the field for quantity -->
-                                                    <span class="out-of-stock-badge">Out of Stock</span>
-                                                    {% endif %}
                                                 </div>
                                                 <div class="product-action-1">
                                                     <a href="{% url 'core:product-detail' p.pid %}" class="action-btn"><i class="fi-rs-eye"></i></a>
                                                 </div>
                                                 <div class="product-badges product-badges-position product-badges-mrg">
-                                                    {% if p.in_stock == 0 %}  <!-- Assuming 'stock' is the field for quantity -->
-                                                    <span class="hot">Out of Stock</span>
-                                                    {% else %}
-                                                    <span class="hot">-{{p.get_precentage|floatformat:0}}%</span>
+                                                        {% if p.in_stock == 0 %}
+                                                            <span class="out">Out of Stock</span>
+                                                        {% else %}
+
+                                                        <!-- Display Sale Badge -->
+                                                        {% if p.price < p.old_price %}
+                                                            <span class="hot">Sale</span>
+                                                        {% endif %}
+
+                                                        <!-- Display Hot Badge (for example, based on stock or a custom logic) -->
+                                                        {% if p.stock_count > 100 %}
+                                                            <span class="hot">Hot</span>
+                                                        {% endif %}
+
+                                                        <!-- Display New Badge (based on the product's creation date) -->
+                                                        {% if new_products %}
+                                                            <span class="new">New</span>
+                                                        {% endif %}
+
+                                                        <!-- Display Best Badge (e.g., top-rated products) -->
+                                                        {% if p.reviews.all.count > 3 %}
+                                                            <span class="best">Best</span>
+                                                        {% endif %}
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -66,22 +84,21 @@
                                                 <div class="product-category">
                                                     <a href="shop-grid-right.html">{{ p.category.title }}</a>
                                                 </div>
-                                                <h2><a href="{% url 'core:product-detail' p.pid %}">{{ p.title }}</a></h2>
+                                                <h2><a class="text-truncate" href="{% url 'core:product-detail' p.pid %}">{{ p.title }}</a></h2>
                                                 <div class="product-rate-cover">
-                                                    <!-- <div class="product-rate d-inline-block"> -->
-                                                        <!-- <div class="product-rating" style="width: 20%"></div> -->
-                                                    <!-- </div> -->
+                                                    <span class="font-small text-muted">By <a href="">{{ p.vendor.title }}</a></span>
                                                     <i class="fas fa-star text-warning"></i>
                                                     <span class="font-small ml-5 text-muted"> ({{ p.reviews.all.count }})</span>
                                                 </div>
                                                 <div>
-                                                    <span class="font-small text-muted">By <a href="">{{p.vendor.title}}</a></span>
+                                                    <div class="product-price d-flex flex-wrap align-items-center">
+                                                        <span>₱ </span> <span class="current-product-price-{{ p.id }}">{{ p.price }}</span>
+                                                        {% if p.old_price %}
+                                                            <span class="old-price text-truncate">₱ {{p.old_price}}</span>
+                                                        {% endif %}                                 
+                                                    </div>
                                                 </div>
                                                 <div class="product-card-bottom">
-                                                    <div class="product-price">
-                                                        <span>₱ </span> <span class="current-product-price-{{ p.id }}">{{p.price}}</span>
-                                                        <span class="old-price">₱ {{p.old_price}}</span>
-                                                    </div>
                                                     <div class="add-cart">
                                                         <input type="hidden" value="1" id="product-quantity" class="product-quantity-{{ p.id }}">
                                                         <input type="hidden" class="product-pid-{{ p.id }}" value="{{ p.pid }}">
@@ -89,16 +106,17 @@
                                                         <input type="hidden" class="product-id-{{ p.id }}" value="{{ p.id }}">
                                                         <input type="hidden" class="product-title-{{ p.id }}" value="{{ p.title }}">
                                                         <input type="hidden" class="product-cost-{{ p.id }}" value="{{ p.cost }}">
-                                                        
                                                         <div class="d-flex">
-                                                            <button class="add add-to-cart-btn" data-index="{{ p.id }}" style="border: none;" id="add-to-cart-btn" {% if not p.in_stock %}disabled{% endif %}><i class="fi-rs-shopping-cart mr-5"></i>Add</button>
+                                                            <button class="add add-to-cart-btn" data-index="{{ p.id }}" style="border: none;" id="add-to-cart-btn" {% if not p.in_stock %}disabled{% endif %}>
+                                                                <i class="fi-rs-shopping-cart mr-5"></i>Add
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    {% endfor %}
+                                {% endfor %}
                                 </div>
                                 <!--End product-grid-4-->
                             </div>
@@ -114,6 +132,7 @@
                             </div>
                         </div>
                     </section>
+
                     <!--Products Tabs-->
                 </div>
                 <div class="col-lg-1-5 primary-sidebar sticky-sidebar pt-30">
