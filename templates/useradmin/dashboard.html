@@ -71,6 +71,12 @@
         </header>
         <div class="card-body">
             <div class="table-responsive">
+                <tr class="mx-2 p-2">
+                    <td ><input class="form-control form-control-sm" type="text" id="min" name="min" placeholder="Minimum date:"></td>
+                </tr>
+                <tr class="mx-2 p-2">
+                    <td ><input class="form-control form-control-sm" type="text" id="max" name="max" placeholder="Maximum date:"></td>
+                </tr>
                 <div class="table-responsive">
                     <table id="recentOrders" class="table align-middle table-nowrap mb-0">
                         <thead class="table-light">
@@ -82,10 +88,10 @@
                                     </div> -->
                                 </th>
                                 <th class="align-middle" scope="col">Order ID</th>
+                                <th class="align-middle" scope="col">Order Date</th>
                                 <th class="align-middle" scope="col">Billing Name</th>
                                 <th class="align-middle" scope="col">Email</th>
                                 <th class="align-middle" scope="col">Phone Number</th>
-                                <th class="align-middle" scope="col">Order Date</th>
                                 <th class="align-middle" scope="col">Total Price</th>
                                 <th class="align-middle" scope="col">Payment Status</th>
                                 <th class="align-middle" scope="col">View Details</th>
@@ -95,16 +101,16 @@
                             {% for l in latest_orders %}
                             <tr>
                                 <td><a href="#" class="fw-bold">#{{l.oid}}</a></td>
+                                <td>{{l.order_date|date:"Y-m-d"}}</td>
                                 <td>{{l.full_name}}</td>
                                 <td>{{l.email}}</td>
                                 <td>{{l.phone}}</td>
-                                <td>{{l.order_date}}</td>
                                 <td>₱ {{l.price}}</td>
                                 <td>
                                     {% if l.paid_status == True %}
-                                    <span class="badge badge-pill badge-soft-success">Paid</span>
+                                    <span class="badge bg-success w-100 h-100">Paid</span>
                                     {% else %}
-                                    <span class="badge badge-pill badge-soft-danger">Not Paid</span>
+                                    <span class="badge bg-danger w-100 h-100">Not Paid</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -119,5 +125,88 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let minDate, maxDate;
+
+        // Custom filtering function which will search data in column four between two values
+        DataTable.ext.search.push(function (settings, data, dataIndex) {
+            let min = minDate.val();
+            let max = maxDate.val();
+            let date = new Date(data[1]); // Use the date column (index 1)
+            if (
+                (min === null && max === null) ||
+                (min === null && date <= max) ||
+                (min <= date && max === null) ||
+                (min <= date && date <= max)
+            ) {
+                return true;
+            }
+            return false;
+        });
+
+         // Date filtering
+        minDate = new DateTime('#min', {
+            format: 'MMMM Do YYYY'
+        });
+        maxDate = new DateTime('#max', {
+            format: 'MMMM Do YYYY'
+        });
+
+        // Initialize main table with export buttons
+        let table = new DataTable('#recentOrders', {
+            retrieve: true,
+            dom: 'lrBtpi',
+            language: {
+                
+                    emptyPanes: 'There are no panes to display. :/'
+                
+            },
+            columnDefs: [
+            {
+                searchPanes: {
+                    show: false
+                },
+                targets: [1, 2, 3, 4, 5, 6, 7], // Hide the search panes for these columns
+            },
+            ],
+            buttons: [
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="bi bi-clipboard"></i> Copy',
+                    className: 'btn btn-sm btn-secondary m-2'
+                },
+                {
+                    extend: 'csvHtml5',
+                    text: '<i class="bi bi-filetype-csv"></i> CSV',
+                    className: 'btn btn-sm btn-info m-2'
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                    className: 'btn btn-sm btn-success m-2'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="bi bi-filetype-pdf"></i> PDF',
+                    className: 'btn btn-sm btn-danger m-2'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="bi bi-printer"></i> Print',
+                    className: 'btn btn-sm btn-primary m-2'
+                }
+            ],      
+        });
+
+       
+        // Re-draw the table when the min/max date changes
+        document.querySelectorAll('#min, #max').forEach((el) => {
+            el.addEventListener('change', () => table.draw());
+        });
+
+    });
+</script>
 {% endblock content %}
         

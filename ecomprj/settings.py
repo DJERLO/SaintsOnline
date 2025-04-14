@@ -164,13 +164,20 @@ JAZZMIN_SETTINGS = {
     'user_avatar': 'avatar',
     'site_header' : "Saints Online",
     'site_brand' : "SAINTS CLARE SHOP",
-    'site_logo': "assets/imgs/theme/shopadmin.png",
+    'site_logo': "assets/imgs/theme/owshit.png",
     'copyright' : "Saint-Shop.scc",
 
      "icons": {
         "auth": "fas fa-users-cog", 
         "auth.user": "fas fa-user", 
-        "auth.Group": "fas fa-users", 
+        "auth.Group": "fas fa-users",
+
+        'account.emailaddress': "fa-regular fa-envelope",
+        "socialaccount.socialaccount": "fas fa-user-circle",
+        "socialaccount.socialtoken": "fas fa-key",
+        "socialaccount.socialapp": "fas fa-user-cog",
+
+        "ipn.paypalipn":"fa-regular fa-money-bill-1",
 
         "core.Address": "fas fa-building", 
         "core.CartOrder": "fa-solid fa-cart-shopping", 
@@ -180,11 +187,14 @@ JAZZMIN_SETTINGS = {
         "core.Product": "fa-solid fa-icons",
         "core.Vendor": "fa-solid fa-shop", 
         "core.ProductReview": "fa-regular fa-star",
+        "core.producttag": "fa-solid fa-tags",
         
         "userauths.ContactUs": "fa-solid fa-phone",
         "userauths.Profile": "fas fa-users", 
-        "userauths.User": "fa-regular fa-user",
-        "userauths.Customers": "fa-light fa-user"
+        "userauths.User": "fa-solid fa-user-secret",
+        "userauths.Customers": "fa-light fa-user",
+        "userauths.customer": "fa-solid fa-users",
+        "taggit.tag": "fa-solid fa-tags",
         },
 }
 

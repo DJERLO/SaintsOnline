@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import include, path
 
 from django.conf import settings
@@ -23,7 +24,11 @@ from allauth.account.views import SignupView
 from django.urls import path
 from userauths.forms import MyCustomSocialSignupForm
 
+def login_view(request):
+    return redirect('account_login')
+
 urlpatterns = [
+    path('admin/login/', login_view, name='admin_login'),  # Redirect to the login view
     path('admin/', admin.site.urls),
     # Include allauth URLs for authentication
     path('accounts/', include('allauth.urls')),  # All auth URLs
