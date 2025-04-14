@@ -3,3 +3,4 @@ venv/
 sshkey.txt
 sshkey.txt.pub
 staticfiles/
+requirements_dev.txt
