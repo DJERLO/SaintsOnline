@@ -8,7 +8,7 @@ from django.utils import timezone
 
 STATUS_CHOICES = (
     ("processing", "Processing"),
-    ("packaging", "Packing"),
+    ("packing", "Packing"),
     ("Ready To Pickup", "Ready To Pickup"),
     ("All Ready Pickup", "Has been Pickup"),
 )

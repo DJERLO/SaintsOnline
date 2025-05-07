@@ -15,7 +15,7 @@ def send_order_status_email(sender, instance, created, **kwargs):
 
     """STATUS
     ("processing", "Processing"),
-    ("packaging", "Packing"),
+    ("packing", "Packing"),
     ("Ready To Pickup", "Ready To Pickup"),
     ("All Ready Pickup", "Has been Pickup"),
     """
@@ -29,7 +29,11 @@ def send_order_status_email(sender, instance, created, **kwargs):
         f"If you have any questions or need further assistance, feel free to contact our support team.\n\n"
         f"Thank you for shopping with us.\n\n"
         f"Best regards,\n"
-        f"Saint Clare Online Shop Team"
+        f"Saint Clare Online Shop Team.\n\n"
+
+        f"**Note:** This is an automated message. Please do not reply directly to this email.\n"
+
+
     )
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [instance.email]
