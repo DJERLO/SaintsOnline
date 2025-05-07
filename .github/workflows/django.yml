@@ -41,9 +41,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: ⚙️ Run Django migrations (if needed)
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           python manage.py migrate --noinput
 
       - name: 🧪 Run Django tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           python manage.py test
