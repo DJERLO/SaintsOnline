@@ -262,8 +262,8 @@ LOGOUT_REDIRECT_URL = '/'  # Redirect URL after logout
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': env("OAUTH_CLIENT_ID"),
-            'secret': env("OAUTH_CLIENT_SECRET"),
+            'client_id': os.getenv("OAUTH_CLIENT_ID"),
+            'secret': os.getenv("OAUTH_CLIENT_SECRET"),
             'key': ''
         },
         'SCOPE': [
@@ -457,14 +457,14 @@ CKEDITOR_5_CONFIGS = {
 PAYPAL_RECEIVER_EMAIL = 'sb-8ych933563329@business.example.com'
 PAYPAL_TEST = True
 
-STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
-STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 
 # Email backend (this is for development, use a real email backend in production)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  # Use TLS for security
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")  # Your Gmail address
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")  # Your Gmail password or app password
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")  # Your Gmail address
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Your Gmail password or app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Default sender email        
