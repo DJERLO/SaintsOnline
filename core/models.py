@@ -209,7 +209,7 @@ class CartOrderProducts(models.Model):
     total = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
     cost = models.DecimalField(max_digits=12, decimal_places=2, default="0.00")
     total_cost = models.DecimalField(max_digits=12, decimal_places=2, default="1.99")
-    product_status = models.CharField(choices=STATUS_CHOICES, max_length=30, default="processing")
+    
 
     class Meta:
         verbose_name_plural = "Cart Order Items"

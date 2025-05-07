@@ -25,8 +25,7 @@ class CartOrderAdmin(admin.ModelAdmin):
     list_display = ['user', 'price', 'paid_status', 'order_date', 'product_status', 'oid']
 
 class CartOrderProductsAdmin(admin.ModelAdmin):
-    list_editable = ['product_status']
-    list_display = ['order', 'order_no', 'item', 'oid', 'product_status', 'qty', 'total']
+    list_display = ['order', 'order_no', 'item', 'oid', 'qty', 'total']
 
 class ProductReviewAdmin(admin.ModelAdmin):
     list_display = ['user', 'product', 'review', 'rating']
