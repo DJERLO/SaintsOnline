@@ -13,10 +13,15 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['username']
 
+        
     def save(self, *args, **kwargs):
-        # Ensure password is hashed before saving if it has been set
-        if self.pk is not None and self.password != User.objects.get(pk=self.pk).password:
-            self.set_password(self.password)
+        if self.pk:
+            old_password = User.objects.get(pk=self.pk).password
+            if self.password != old_password and not self.password.startswith('pbkdf2_'):
+                self.set_password(self.password)
+        else:
+            if not self.password.startswith('pbkdf2_'):
+                self.set_password(self.password)
         super().save(*args, **kwargs)
 
     def __str__(self):
