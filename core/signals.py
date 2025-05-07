@@ -21,10 +21,17 @@ def send_order_status_email(sender, instance, created, **kwargs):
     """
     # If the order status is changed (not created), send an email
     if not created:  # Means the order was updated, not created
-        subject = f"Your Order {instance.oid} Status Update"
-        message = f"Hello, your order {instance.oid} status has been updated to: {instance.product_status}"
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [instance.email]
+     subject = f"Update on Your Order #{instance.oid}"
+     message = (
+        f"Dear {instance.full_name},\n\n"
+        f"We would like to inform you that the status of your order (Order ID: {instance.oid}) has been updated.\n\n"
+        f"**Current Status:** {instance.product_status}\n\n"
+        f"If you have any questions or need further assistance, feel free to contact our support team.\n\n"
+        f"Thank you for shopping with us.\n\n"
+        f"Best regards,\n"
+        f"Saint Clare Online Shop Team"
+    )
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [instance.email]
 
-        # Send email
-        send_mail(subject, message, from_email, recipient_list)
+    send_mail(subject, message, from_email, recipient_list)
