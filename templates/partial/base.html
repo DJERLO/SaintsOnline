@@ -566,36 +566,44 @@
         function checkOpenClose() {
             var currentDate = new Date();
             var currentHour = currentDate.getHours();
+            var currentDay = currentDate.getDay(); // 0 = Sunday
             var status = document.getElementById("status");
             var timestamp = document.getElementById("date-time");
+    
+            // Clear any previous classes
+            status.classList.remove('bg-success', 'bg-danger');
+    
             var statusMessage = "";
-            var statusColor = "";
             var timeColor = "";
-
-            // Check if the time is between 8 AM and 5 PM
-            if (currentHour >= 8 && currentHour < 17) {
-                statusMessage = "Open";
-                statusColor = "green"; // Green text for Open
-                timeColor = "green"; // Time text should also be green when open
-                status.classList.add('bg-success')
-            }
-            // Check if the time is between 6 PM and 7 AM
-            else if (currentHour >= 17.01 || currentHour < 7.59) {
+    
+            // If it's Sunday (0), store is closed all day
+            if (currentDay === 0) {
                 statusMessage = "Closed";
-                statusColor = "red"; // Red text for Closed
-                timeColor = "red"; // Time text should also be red when closed
-                status.classList.add('bg-danger')
+                timeColor = "red";
+                status.classList.add('bg-danger');
+            } else if (currentHour >= 8 && currentHour < 17) {
+                statusMessage = "Open";
+                timeColor = "green";
+                status.classList.add('bg-success');
+            } else {
+                statusMessage = "Closed";
+                timeColor = "red";
+                status.classList.add('bg-danger');
             }
-
-            // Display the status message with the appropriate color
+    
+            // Set the status text and color
             status.innerText = statusMessage;
-            
-
-            // Show the current date and time with the appropriate color
+            status.style.color = timeColor;
+    
+            // Set the timestamp text and color
             var dateString = currentDate.toLocaleString();
             timestamp.innerText = "Current Date and Time: " + dateString;
-            timestamp.style.color = timeColor; // Apply color to the time text
+            timestamp.style.color = timeColor;
         }
+    
+        // Call function after page loads
+        window.onload = checkOpenClose;
+    </script>
 
         // Update the status and time every second
         setInterval(checkOpenClose, 1000);
