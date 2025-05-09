@@ -4,10 +4,10 @@
 {% load allauth i18n %}
 {% block content %}
 {% url 'account_logout' as action_url %}
-<link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
+
 <main>
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
-    <div class="loader d-flex justify-content-center align-content-center"></div>
+    <div class="loader"></div>
     <div class="col-md-4 text-center">
         <form id="logoutForm" action="{{action_url}}" method="post">
             {% csrf_token %}
@@ -21,4 +21,40 @@
         document.getElementById('logoutForm').submit();
     }, 3000); // 5000 milliseconds = 5 seconds
 </script>
+
+<style>
+    .loader {
+      
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+  /* HTML: <div class="loader"></div> */
+    .loader {
+    width: 60px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    animation: l11 2s infinite;
+    }
+    @keyframes l11 {
+    0%   {background: conic-gradient(#f03355 0     ,#0000 0)}
+    12.5%{background: conic-gradient(#f03355 45deg ,#0000 46deg)}
+    25%  {background: conic-gradient(#f03355 90deg ,#0000 91deg)}
+    37.5%{background: conic-gradient(#f03355 135deg,#0000 136deg)}
+    50%  {background: conic-gradient(#f03355 180deg,#0000 181deg)}
+    62.5%{background: conic-gradient(#f03355 225deg,#0000 226deg)}
+    75%  {background: conic-gradient(#f03355 270deg,#0000 271deg)}
+    87.5%{background: conic-gradient(#f03355 315deg,#0000 316deg)}
+    100% {background: conic-gradient(#f03355 360deg,#0000 360deg)}
+    }
+</style>
 {% endblock %}

@@ -122,11 +122,10 @@
                 <h4 class="mb-0 me-2">Physical Store Is Now</h4> 
             </div>
             <div onload="checkOpenClose()" class="d-inline-flex align-items-center">
-                
                 <h5 id="status" class="mb-0 me-2 fs-5 badge"></h5>
-                <p id="date-time" class="mb-0"></p> <!-- Date and time display -->
-
-        </div>
+                <p id="date-time" class="mb-0"></p>
+                <div id="status-image" class="ms-2"></div> <!-- Add this container -->
+            </div>
         
         <div class="header-bottom header-bottom-bg-color sticky-bar" style="background-color: black;">
             <div class="container">
@@ -564,45 +563,61 @@
 
     <script>
         function checkOpenClose() {
-            var currentDate = new Date();
-            var currentHour = currentDate.getHours();
-            var currentDay = currentDate.getDay(); // 0 = Sunday
-            var status = document.getElementById("status");
-            var timestamp = document.getElementById("date-time");
+    var currentDate = new Date();
+    var currentHour = currentDate.getHours();
+    var currentDay = currentDate.getDay(); // 0 = Sunday
+
+    var status = document.getElementById("status");
+    var timestamp = document.getElementById("date-time");
+    var imageContainer = document.getElementById("status-image");
+
+    // Clear any previous classes and image
+    status.classList.remove('bg-success', 'bg-danger');
+    imageContainer.innerHTML = ''; // Clear old image
+
+    var statusMessage = "";
+    var timeColor = "";
+    var imagePath = "";
+
+    // Determine open/close status
+    if (currentDay === 0) {
+        statusMessage = "Closed";
+        timeColor = "red";
+        status.classList.add('bg-danger');
+        imagePath = "{% static 'assets/imgs/theme/sleep.gif' %}";
+    } else if (currentHour >= 8 && currentHour < 17) {
+        statusMessage = "Open";
+        timeColor = "green";
+        status.classList.add('bg-success');
+        imagePath = "{% static 'assets/imgs/theme/morning.gif' %}";
+    } else {
+        statusMessage = "Closed";
+        timeColor = "red";
+        status.classList.add('bg-danger');
+        imagePath = "{% static 'assets/imgs/theme/sleep.gif' %}";
+    }
+
+    // Update status text and color
+    status.innerText = statusMessage;
+    status.style.color = timeColor;
+
+    // Update timestamp
+    var dateString = currentDate.toLocaleString();
+    timestamp.innerText = "Current Date and Time: " + dateString;
+    timestamp.style.color = timeColor;
+
+    // Create and append the image
+    const img = document.createElement('img');
+    img.src = imagePath;
+    img.width = 100;
+    imageContainer.appendChild(img);
+}   
     
-            // Clear any previous classes
-            status.classList.remove('bg-success', 'bg-danger');
+        // Call it once immediately
+        checkOpenClose();
     
-            var statusMessage = "";
-            var timeColor = "";
-    
-            // If it's Sunday (0), store is closed all day
-            if (currentDay === 0) {
-                statusMessage = "Closed";
-                timeColor = "red";
-                status.classList.add('bg-danger');
-            } else if (currentHour >= 8 && currentHour < 17) {
-                statusMessage = "Open";
-                timeColor = "green";
-                status.classList.add('bg-success');
-            } else {
-                statusMessage = "Closed";
-                timeColor = "red";
-                status.classList.add('bg-danger');
-            }
-    
-            // Set the status text and color
-            status.innerText = statusMessage;
-            status.style.color = timeColor;
-    
-            // Set the timestamp text and color
-            var dateString = currentDate.toLocaleString();
-            timestamp.innerText = "Current Date and Time: " + dateString;
-            timestamp.style.color = timeColor;
-        }
-    
-        // Call function after page loads
-        window.onload = checkOpenClose;
+        // Update every second
+        setInterval(checkOpenClose, 1000);
     </script>
 
         // Update the status and time every second
