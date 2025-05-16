@@ -88,9 +88,9 @@
                                             {% if user.is_authenticated %}
                                                 {% for group in request.user.groups.all %}
                                                     {% if group.name == "Staff" %}
-                                                        <li><a href="{% url 'useradmin:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>Admin Dashboard</a></li>
+                                                        <li><a href="{% url 'useradmin:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>Cashier P.O.S</a></li>
                                                         {% if user.is_superuser %}
-                                                            <li><a href="/admin/"><i class="fi fi-rs-user mr-10"></i>Developer Panel</a></li>
+                                                            <li><a href="/admin/"><i class="fi fi-rs-user mr-10"></i>Admin Dashboard</a></li>
                                                         {% endif %}
                                                     {% endif %}
                                                     
